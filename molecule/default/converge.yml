@@ -5,3 +5,4 @@
     - name: "Include checkmk_agent"
       include_role:
         name: "checkmk_agent"
+...
