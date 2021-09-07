@@ -2,14 +2,13 @@
 
 An [Ansible](https://www.ansible.com/) [Role](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html) to install the agent/client for [CheckMK RAW edition](https://checkmk.com/product/raw-edition).
 
-This role utilizes SSH on Unix-type systems instead of the default port 6556.  This encrypts communications and avoids opening a new port for monitoring and setting up a new service.
-
 This is a complete rebuild of the [install-check_mk-agent](https://github.com/kso512/install-check_mk-agent) role I created and maintained for years, undertaken due to changes in CI/CD and naming conventions in Ansible Galaxy & CheckMK.
 
 All tasks are tagged with `checkmk-agent`.
 
 The following distributions have been tested automatically and continuously integrated:
 
+- [Debian 9 "Stretch"](https://www.debian.org/releases/stretch/)
 - [Ubuntu 18.04 LTS "Bionic Beaver"](http://releases.ubuntu.com/bionic/)
 - [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
 
@@ -22,6 +21,8 @@ The following distributions have been tested automatically and continuously inte
 ## Requirements
 
 This role requires no other roles.  It is designed to be compatible with CheckMK server in general and [kso512.checkmk_server](https://github.com/kso512/checkmk_server) specifically.
+
+This role utilizes SSH on Unix-type systems instead of the default port 6556.  This encrypts communications and avoids opening a new port for monitoring and setting up a new service.
 
 To create authentication keys for SSH, use the "ssh-keygen" program as shown [here](https://man.openbsd.org/ssh-keygen).
 
