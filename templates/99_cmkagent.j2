@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+
+{{ checkmk_agent_user }} ALL = NOPASSWD: {{ checkmk_agent_dest }}
+Defaults:{{ checkmk_agent_user }} !requiretty
