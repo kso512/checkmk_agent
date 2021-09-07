@@ -1,11 +1,12 @@
 ---
 # This is an example playbook to execute Ansible tests.
-
 - name: Verify
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+  - name: Checking agent installation | SHELL
+    ansible.builtin.shell: set -o pipefail && sudo -u cmkagent sudo /home/cmkagent/check_mk_agent | grep '\<\<\<check_mk\>\>\>' > /tmp/cmkagent.txt
+    args:
+      creates: "/tmp/cmkagent.txt"
+      executable: /bin/bash
 ...
