@@ -4,6 +4,21 @@ An [Ansible](https://www.ansible.com/) [Role](https://docs.ansible.com/ansible/l
 
 This role utilizes SSH on Unix-type systems instead of the default port 6556.  This encrypts communications and avoids opening a new port for monitoring and setting up a new service.
 
+This is a complete rebuild of the [install-check_mk-agent](https://github.com/kso512/install-check_mk-agent) role I created and maintained for years, undertaken due to changes in CI/CD and naming conventions in Ansible Galaxy & CheckMK.
+
+All tasks are tagged with `checkmk-agent`.
+
+The following distributions have been tested automatically and continuously integrated:
+
+- [Ubuntu 18.04 LTS "Bionic Beaver"](http://releases.ubuntu.com/bionic/)
+- [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
+
+...using the following technologies:
+
+- [Molecule playbook testing](https://github.com/geerlingguy/molecule-playbook-testing) by [@geerlingguy](https://github.com/geerlingguy)
+- [GitHub Actions](https://github.com/features/actions)
+- [docker-systemctl-replacement](https://github.com/gdraheim/docker-systemctl-replacement) by [@gdraheim](https://github.com/gdraheim)
+
 ## Requirements
 
 This role requires no other roles.  It is designed to be compatible with CheckMK server in general and [kso512.checkmk_server](https://github.com/kso512/checkmk_server) specifically.
