@@ -1,0 +1,39 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# Script to count logins and return in Check_MK Local Check format:
+#   http://mathias-kettner.com/checkmk_localchecks.html
+
+# Warning & Critical levels, from Ansible variables:
+WARN={{ checkmk_agent_count_users_warn }}
+CRIT={{ checkmk_agent_count_users_crit }}
+
+# Define variables with sane initial values:
+STATUS=3
+ITEM_NAME="User_Logins"
+PERF_DATA="-"
+CHECK_OUTPUT="UNKNOWN"
+
+# Gather input:
+WC_OUTPUT=$(w | wc -l)
+
+# Remove the effect of the header by subtracting two lines:
+WC_OUTPUT=$((WC_OUTPUT-2))
+
+# Build performance data:
+PERF_DATA="logins=$WC_OUTPUT;$WARN;$CRIT"
+
+# Decide on a status and build the check output:
+#if [ "$WC_OUTPUT" -lt "$WARN" ]; then
+  STATUS=0
+  CHECK_OUTPUT="OK - $WC_OUTPUT users logged in" # No need for alerts at this time.
+#elif [ "$WC_OUTPUT" -lt "$CRIT" ]; then
+#  STATUS=1
+#  CHECK_OUTPUT="WARNING - $WC_OUTPUT users logged in"
+#else
+#  STATUS=2
+#  CHECK_OUTPUT="CRITICAL - $WC_OUTPUT users logged in"
+#fi
+
+# Return output:
+echo "$STATUS $ITEM_NAME $PERF_DATA $CHECK_OUTPUT"

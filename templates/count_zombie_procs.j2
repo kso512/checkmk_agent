@@ -1,0 +1,35 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# Script to count Zombie Processes and return in Check_MK Local Check format:
+#   http://mathias-kettner.com/checkmk_localchecks.html
+#
+# Warning & Critical levels:
+WARN={{ checkmk_agent_count_zombie_procs_warn }}
+CRIT={{ checkmk_agent_count_zombie_procs_crit }}
+
+# Define variables with sane initial values:
+STATUS=3
+ITEM_NAME="Zombie_Processes"
+PERF_DATA="-"
+CHECK_OUTPUT="UNKNOWN"
+
+# Gather input:
+PS_OUTPUT=$(ps aux | awk '{ print $8 }' | grep -c Z)
+
+# Perform calculations:
+PERF_DATA="zombies=$PS_OUTPUT;$WARN;$CRIT"
+
+#if [ "$PS_OUTPUT" -lt "$WARN" ]; then
+  STATUS=0
+  CHECK_OUTPUT="OK - $PS_OUTPUT zombie processes" # No need for alerts at this time.
+#elif [ "$PS_OUTPUT" -lt "$CRIT" ]; then
+#  STATUS=1
+#  CHECK_OUTPUT="WARNING - $PS_OUTPUT zombie processes"
+#else
+#  STATUS=2
+#  CHECK_OUTPUT="CRITICAL - $PS_OUTPUT zombie processes"
+#fi
+
+# Return output:
+echo "$STATUS $ITEM_NAME $PERF_DATA $CHECK_OUTPUT"
