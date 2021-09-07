@@ -1,2 +1,5 @@
 ---
 # tasks file for checkmk_agent
+- include_tasks: "{{ ansible_os_family }}-tasks.yml"
+  tags: checkmk-agent
+...
