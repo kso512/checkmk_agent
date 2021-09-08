@@ -1,4 +1,10 @@
-# checkmk_agent
+# [checkmk_agent](https://galaxy.ansible.com/kso512/checkmk_agent)
+
+[![Ansible role quality](https://img.shields.io/ansible/quality/56196)](https://galaxy.ansible.com/kso512/checkmk_agent) [![Ansible role downloads](https://img.shields.io/ansible/role/d/56196)](https://galaxy.ansible.com/kso512/checkmk_agent) [![GitHub repo size](https://img.shields.io/github/repo-size/kso512/checkmk_agent)](https://github.com/kso512/checkmk_agent)
+
+[![CI](https://github.com/kso512/checkmk_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/kso512/checkmk_agent/actions/workflows/ci.yml) [![Release](https://github.com/kso512/checkmk_agent/actions/workflows/release.yml/badge.svg)](https://github.com/kso512/checkmk_agent/actions/workflows/release.yml) [![GitHub issues](https://img.shields.io/github/issues-raw/kso512/checkmk_agent)](https://github.com/kso512/checkmk_agent)
+
+[![made-with-bash](https://img.shields.io/badge/Made%20with-Bash-1f425f.svg)](https://www.gnu.org/software/bash/) [![made-with-Markdown](https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg)](http://commonmark.org) [![GitHub](https://img.shields.io/github/license/kso512/checkmk_agent)](https://www.gnu.org/licenses/gpl-2.0.txt)
 
 An [Ansible](https://www.ansible.com/) [Role](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html) to install the agent/client for [CheckMK RAW edition](https://checkmk.com/product/raw-edition).
 
@@ -21,6 +27,12 @@ The following distributions have been tested automatically and continuously inte
 - [Molecule playbook testing](https://github.com/geerlingguy/molecule-playbook-testing) by [@geerlingguy](https://github.com/geerlingguy)
 - [GitHub Actions](https://github.com/features/actions)
 - [docker-systemctl-replacement](https://github.com/gdraheim/docker-systemctl-replacement) by [@gdraheim](https://github.com/gdraheim)
+
+## Version Matrix
+
+| Role Version | CheckMK Raw Edition Version |
+| ------------ | --------------------------- |
+| 1.0.0 | 2.0.0p9 |
 
 ## Requirements
 
