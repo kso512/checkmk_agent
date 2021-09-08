@@ -8,6 +8,7 @@ All tasks are tagged with `checkmk-agent`.
 
 The following distributions have been tested automatically and continuously integrated:
 
+- [CentOS-7](https://wiki.centos.org/Manuals/ReleaseNotes/CentOS7)
 - [CentOS-8](https://wiki.centos.org/Manuals/ReleaseNotes/CentOSLinux8)
 - [Debian 9 "Stretch"](https://www.debian.org/releases/stretch/)
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
