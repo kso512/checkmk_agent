@@ -56,4 +56,13 @@ checkmk_agent_sudo_owner: "root"
 checkmk_agent_sudo_src: "99_cmkagent.j2"
 checkmk_agent_sudo_validate: 'visudo -cf %s'
 checkmk_agent_user: "cmkagent"
+checkmk_agent_win_config_dest: "{{ checkmk_agent_win_data_folder }}check_mk.user.yml"
+checkmk_agent_win_config_src: "check_mk.user.yml.j2"
+checkmk_agent_win_data_folder: "C:\\ProgramData\\checkmk\\agent\\"
+checkmk_agent_win_install_dest: "c:\\Users\\{{ ansible_user }}\\Downloads\\{{ checkmk_agent_win_install_src }}"
+checkmk_agent_win_install_src: "check_mk_agent.msi"
+checkmk_agent_win_plugins:
+  - "mk_inventory.vbs"
+  - "windows_updates.vbs"
+checkmk_agent_win_productid: "{B6212139-D124-4782-8F81-05D08203092D}"
 ...
