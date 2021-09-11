@@ -1,0 +1,32 @@
+---
+# tasks file for install-check_mk-agent (Windows only)
+- name: Copy agent installation file | WIN_COPY
+  ansible.windows.win_copy:
+    dest: "{{ checkmk_agent_win_install_dest }}"
+    src: "{{ checkmk_agent_win_install_src }}"
+  tags:
+    - checkmk-agent
+- name: Install agent | WIN_PACKAGE
+  ansible.windows.win_package:
+    path: "{{ checkmk_agent_win_install_dest }}"
+    product_id: "{{ checkmk_agent_win_productid }}"
+    state: present
+  notify: Restart Windows agent service | WIN_SERVICE
+  tags:
+    - checkmk-agent
+- name: Generate configuration file from template | WIN_TEMPLATE
+  ansible.windows.win_template:
+    src: "{{ checkmk_agent_win_config_src }}"
+    dest: "{{ checkmk_agent_win_config_dest }}"
+  notify: Restart Windows agent service | WIN_SERVICE
+  tags:
+    - checkmk-agent
+- name: Generate plugins | WIN_TEMPLATE
+  ansible.windows.win_template:
+    src: "{{ item }}.j2"
+    dest: "{{ checkmk_agent_win_data_folder }}plugins\\{{ item }}"
+  with_items: "{{ checkmk_agent_win_plugins }}"
+  notify: Restart Windows agent service | WIN_SERVICE
+  tags:
+    - checkmk-agent
+...
