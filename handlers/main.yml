@@ -1,2 +1,9 @@
 ---
 # handlers file for checkmk_agent
+- name: Restart Windows agent service | WIN_SERVICE
+  ansible.windows.win_service:
+    name: CheckMKService
+    state: restarted
+  tags:
+    - checkmk-agent
+...
