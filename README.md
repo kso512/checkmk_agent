@@ -28,15 +28,23 @@ The following distributions have been tested automatically and continuously inte
 - [GitHub Actions](https://github.com/features/actions)
 - [docker-systemctl-replacement](https://github.com/gdraheim/docker-systemctl-replacement) by [@gdraheim](https://github.com/gdraheim)
 
+The remaining supported operating systems are tested manually:
+
+- [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
+
 ## Version Matrix
 
 | Role Version | CheckMK Raw Edition Version |
 | ------------ | --------------------------- |
-| 1.0.0 | 2.0.0p9 |
+| 1.0.0 - 1.0.1 | 2.0.0p9 |
 
 ## Requirements
 
 This role requires no other roles.  It is designed to be compatible with CheckMK server in general and [kso512.checkmk_server](https://github.com/kso512/checkmk_server) specifically.
+
+If connecting to a Windows host with [Windows Remote Management (WinRM)](https://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html#what-is-winrm), you may need to install the `pywinrm` package on your Ansible system:
+
+    pip install "pywinrm>=0.3.0"
 
 This role utilizes SSH on Unix-type systems instead of the default port 6556.  This encrypts communications and avoids opening a new port for monitoring and setting up a new service.
 
@@ -123,6 +131,13 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `"99_cmkagent.j2"` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `"cmkagent"` |
+| checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
+| checkmk_agent_win_config_src | Filename of the configuration file template | `"check_mk.user.yml.j2"` |
+| checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `"C:\\ProgramData\\checkmk\\agent\\"` |
+| checkmk_agent_win_install_dest | Full pathname of the CheckMK Agent installation file | `"c:\\Users\\{{ ansible_user }}\\Downloads\\{{ checkmk_agent_win_install_src }}"` |
+| checkmk_agent_win_install_src | Short file name of the CheckMK Agent installation file | `"check_mk_agent.msi"` |
+| checkmk_agent_win_plugins | List of Windows plugins to copy to the "plugin" folder" | `"mk_inventory.vbs"` `"windows_updates.vbs"` |
+| checkmk_agent_win_productid | Version-specific "Product ID" to install | `"{B6212139-D124-4782-8F81-05D08203092D}"` |
 
 ## Dependencies
 
