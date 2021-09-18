@@ -40,7 +40,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install test dependencies
-        run: pip install 'ansible${{ matrix.ansible-version }}' molecule[docker] docker
+        run: pip install 'ansible${{ matrix.ansible-version }}' ansible-lint molecule[docker] docker
       - name: Run Molecule tests
         run: |
           molecule test
