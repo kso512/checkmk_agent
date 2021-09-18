@@ -32,11 +32,33 @@ The remaining supported operating systems are tested manually:
 
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
 
+For performance reasons, the following "sections" have been disabled in the Windows agent:
+
+- services
+- msexch
+- dotnet_clrmemory
+- wmi_webservices
+- wmi_cpuload
+- ps
+- fileinfo
+- logwatch
+- openhardwaremonitor
+
+In addition, the execution of plugins have been adjusted:
+
+- Timeout raised from `30` to `120`
+- Async enabled
+- Cache_age set to `3600` (1 hour)
+
+Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_src` to adjust.
+
 ## Version Matrix
 
 | Role Version | CheckMK Raw Edition Version |
 | ------------ | --------------------------- |
 | 1.0.0 - 1.0.1 | 2.0.0p9 |
+| [skipped](https://forum.checkmk.com/t/release-checkmk-stable-release-2-0-0p10/27023) | 2.0.0p10 |
+| 1.0.2 | 2.0.0p11 |
 
 ## Requirements
 
