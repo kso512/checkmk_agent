@@ -35,6 +35,7 @@ checkmk_agent_plugin_checks:
   - "nfsexports"
   - "smart"
   - "hpsa"
+  - "mk_apt"
 checkmk_agent_plugin_group: "{{ checkmk_agent_plugin_user }}"
 checkmk_agent_plugin_mode: "{{ checkmk_agent_mode }}"
 checkmk_agent_plugin_path: "{{ checkmk_agent_home }}/plugins"
