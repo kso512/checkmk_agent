@@ -61,6 +61,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 | 1.0.2 | 2.0.0p11 |
 | 1.0.3 | 2.0.0p12 |
 | 1.0.4 | 2.0.0p13 |
+| 1.0.5 | 2.0.0p14 |
 
 ## Requirements
 
