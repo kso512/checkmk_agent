@@ -75,13 +75,17 @@ inpath() {
 # The locale logic here is used to make the Python encoding detection work (see CMK-2778).
 unset -v LANG
 if inpath locale && inpath paste; then
-    case "$(locale -a | paste -sd ' ' -)" in
-        *'C.UTF-8'*) LC_ALL="C.UTF-8" ;;
-        *'C.utf8'*) LC_ALL="C.utf8" ;;
+    # The space at the beginning of " $(locale ...)" is important, since we also have a space in
+    # the conditions. We need this to also match C.UTF-8 and C.utf8 right at the beginning.
+    # Furthermore, we cannot simply use *'C.UTF-8'* (without the space), because this also
+    # matches e.g. es_EC.UTF-8.
+    case " $(locale -a | paste -sd ' ' -)" in
+        *' C.UTF-8'*) LC_ALL="C.UTF-8" ;;
+        *' C.utf8'*) LC_ALL="C.utf8" ;;
     esac
-    LC_ALL="${LC_ALL:-C}"
-    export LC_ALL
 fi
+LC_ALL="${LC_ALL:-C}"
+export LC_ALL
 
 read_python_version() {
     if inpath "$1"; then
@@ -181,7 +185,7 @@ fi
 
 section_checkmk() {
     echo "<<<check_mk>>>"
-    echo "Version: 2.0.0p12"
+    echo "Version: 2.0.0p16"
     echo "AgentOS: linux"
     echo "Hostname: $(hostname)"
     echo "AgentDirectory: $MK_CONFDIR"
@@ -1219,11 +1223,11 @@ run_local_checks() {
 run_plugins() {
     if cd "$PLUGINSDIR"; then
         if $MK_RUN_SYNC_PARTS; then
-        for skript in ./*; do
-            if is_valid_plugin "$skript"; then
-                run_agent_plugin "$skript"
-            fi
-        done
+            for skript in ./*; do
+                if is_valid_plugin "$skript"; then
+                    run_agent_plugin "$skript"
+                fi
+            done
         fi
         # Call some plugins only every Xth second
         for skript in [1-9]*/*; do
@@ -1366,25 +1370,25 @@ run_cached() {
         AGE=$((NOW - MTIME))
         if [ "$AGE" -le "$MAXAGE" ]; then local USE_CACHEFILE=1; fi
         if $MK_RUN_SYNC_PARTS; then
-        # Output the file in any case, even if it is
-        # outdated. The new file will not yet be available
-        if [ $append_age -eq 1 ]; then
-            # insert the cached-string before the pipe (first -e)
-            # or, if no pipe found (-e t) append it (third -e),
-            # but only once and on the second line (2!b) (first line is section header,
-            # all further lines are long output)
-            sed -e "2s/|/ (Cached: ${AGE}\/${MAXAGE}s)|/" -e t -e "2s/$/ (Cached: ${AGE}\/${MAXAGE}s)/" <"$CACHEFILE"
-        else
-            CACHE_INFO="cached($MTIME,$MAXAGE)"
-            if [[ $NAME == local_* ]]; then
-                sed -e "s/^/$CACHE_INFO /" "$CACHEFILE"
+            # Output the file in any case, even if it is
+            # outdated. The new file will not yet be available
+            if [ $append_age -eq 1 ]; then
+                # insert the cached-string before the pipe (first -e)
+                # or, if no pipe found (-e t) append it (third -e),
+                # but only once and on the second line (2!b) (first line is section header,
+                # all further lines are long output)
+                sed -e "2s/|/ (Cached: ${AGE}\/${MAXAGE}s)|/" -e t -e "2s/$/ (Cached: ${AGE}\/${MAXAGE}s)/" <"$CACHEFILE"
             else
-                # insert the cache info in the section header (^= after '!'),
-                # if none is present (^= before '!')
-                sed -e '/^<<<.*\(:cached(\).*>>>/!s/^<<<\([^>]*\)>>>$/<<<\1:'"${CACHE_INFO}"'>>>/' "$CACHEFILE"
+                CACHE_INFO="cached($MTIME,$MAXAGE)"
+                if [[ $NAME == local_* ]]; then
+                    sed -e "s/^/$CACHE_INFO /" "$CACHEFILE"
+                else
+                    # insert the cache info in the section header (^= after '!'),
+                    # if none is present (^= before '!')
+                    sed -e '/^<<<.*\(:cached(\).*>>>/!s/^<<<\([^>]*\)>>>$/<<<\1:'"${CACHE_INFO}"'>>>/' "$CACHEFILE"
+                fi
             fi
         fi
-    fi
     fi
 
     $MK_RUN_ASYNC_PARTS || return
@@ -1483,7 +1487,6 @@ run_real_time_checks_for_remote() {
         fi
 
         sleep 1
-        RTC_TIMEOUT=$((RTC_TIMEOUT - 1))
     done
 }
 
@@ -1491,7 +1494,7 @@ run_real_time_checks_for_remote() {
 
 get_ntpq() {
     inpath ntpq || return 1
-    run_cached -s ntp 30 "waitmax 5 ntpq -np | sed -e 1,2d -e 's/^\(.\)/\1 /' -e 's/^ /%/' || true"
+    run_cached -s ntp 30 "waitmax 5 ntpq -np | sed -e 1,2d -e 's/^\(.\)/\1 /' -e 's/^ /%/' || true" | sed 's/\(<<<ntp:cached(.*,\)30)>>>/\1120)>>>/'
 }
 
 section_timesyncd() {

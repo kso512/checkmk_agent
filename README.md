@@ -60,6 +60,10 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 | [skipped](https://forum.checkmk.com/t/release-checkmk-stable-release-2-0-0p10/27023) | 2.0.0p10 |
 | 1.0.2 | 2.0.0p11 |
 | 1.0.3 | 2.0.0p12 |
+| 1.0.4 | 2.0.0p13 |
+| 1.0.5 | 2.0.0p14 |
+| 1.0.6 | 2.0.0p15 |
+| 1.0.7 | 2.0.0p16 |
 
 ## Requirements
 
