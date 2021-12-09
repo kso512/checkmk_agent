@@ -20,6 +20,17 @@ checkmk_agent_home: "/home/{{ checkmk_agent_user }}"
 checkmk_agent_local_checks:
   - "count_users"
   - "count_zombie_procs"
+checkmk_agent_local_checks_async:
+  300:
+    - ""
+  600:
+    - ""
+  900:
+    - ""
+  1800:
+    - ""
+  86400:
+    - ""
 checkmk_agent_local_group: "{{ checkmk_agent_local_user }}"
 checkmk_agent_local_mode: "{{ checkmk_agent_mode }}"
 checkmk_agent_local_path: "{{ checkmk_agent_home }}/local"
@@ -35,7 +46,17 @@ checkmk_agent_plugin_checks:
   - "nfsexports"
   - "smart"
   - "hpsa"
-  - "mk_apt"
+checkmk_agent_plugin_checks_async:
+  300:
+    - ""
+  600:
+    - ""
+  900:
+    - ""
+  1800:
+    - ""
+  86400:
+    - "mk_apt"
 checkmk_agent_plugin_group: "{{ checkmk_agent_plugin_user }}"
 checkmk_agent_plugin_mode: "{{ checkmk_agent_mode }}"
 checkmk_agent_plugin_path: "{{ checkmk_agent_home }}/plugins"
