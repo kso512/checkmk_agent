@@ -58,6 +58,13 @@
     dest: "{{ checkmk_agent_authkey_dest }}"
   tags:
     - checkmk-agent
+- name: Delete directory - local | FILE
+  ansible.builtin.file:
+    path: "{{ checkmk_agent_local_path }}"
+    state: absent
+  when: checkmk_agent_local_purge|bool == true
+  tags:
+    - checkmk-agent
 - name: Create directory - local | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_local_user }}"
@@ -97,6 +104,13 @@
     dest: "{{ checkmk_agent_local_path }}/{{ item.0.key }}/{{ item.1 }}"
   loop: "{{ checkmk_agent_local_checks_async | dict2items | subelements('value') }}"
   when: item.1 | length > 0
+  tags:
+    - checkmk-agent
+- name: Delete directory - plugins | FILE
+  ansible.builtin.file:
+    path: "{{ checkmk_agent_plugin_path }}"
+    state: absent
+  when: checkmk_agent_plugin_purge|bool == true
   tags:
     - checkmk-agent
 - name: Create directory - plugins | FILE
@@ -140,11 +154,6 @@
   when: item.1 | length > 0
   tags:
     - checkmk-agent
-- name: Loop over subelements of the dictionary
-  debug:
-    msg: "Key={{ item.0.key }} --- Value={{ item.1 }}"
-  loop: "{{ checkmk_agent_plugin_checks_async | dict2items | subelements('value') }}"
-  when: item.1 | length > 0
 - name: Create directory - spool | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_spool_user }}"

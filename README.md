@@ -131,14 +131,16 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_group | Name of the group that should own the CheckMK Agent executable file | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_home | Full pathname of the CheckMK Agent user home folder | `"/home/{{ checkmk_agent_user }}"` |
 | checkmk_agent_local_checks | List of checks to copy to the "local" folder | `"count_users"` `"count_zombie_procs"` |
-| checkmk_agent_local_checks_async | List of checks to copy to the "local" async folders |
+| checkmk_agent_local_checks_async | List of checks to copy to the "local" async folders | https://docs.checkmk.com/latest/en/localchecks.html#cache |
+| checkmk_agent_local_purge | Delete "local" folder before sync | false (default) |
 | checkmk_agent_local_group | Name of the group that should own the "local" folder and files | `"{{ checkmk_agent_local_user }}"` |
 | checkmk_agent_local_mode | File mode settings of the "local" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_local_path | Full pathname of "local" folder | `"{{ checkmk_agent_home }}/local"` |
 | checkmk_agent_local_user | Name of the user that should own the "local" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_mode | File mode settings of the CheckMK Agent executable file | `"0755"` |
 | checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `"lvm"` `"mk_inventory.linux"` `"mk_iptables"` `"mk_nfsiostat"` `"mk_sshd_config"` `"netstat.linux"` `"nfsexports"` `"smart"` |
-| checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders |
+| checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders | https://docs.checkmk.com/latest/en/localchecks.html#cache |
+| checkmk_agent_plugin_purge | Delete "plugin" folder before sync | false (default) |
 | checkmk_agent_plugin_group | Name of the group that should own the "plugin" folder and files | `"{{ checkmk_agent_plugin_user }}"` |
 | checkmk_agent_plugin_mode | File mode settings of the "plugin" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_plugin_path | Full pathname of "plugin" folder | `"{{ checkmk_agent_home }}/plugins"` |
