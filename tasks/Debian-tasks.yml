@@ -84,7 +84,7 @@
   with_items: "{{ checkmk_agent_local_checks }}"
   tags:
     - checkmk-agent
-- name: Create directory - local - async | FILE
+- name: Create directory - local/async | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_local_user }}"
     group: "{{ checkmk_agent_local_group }}"
@@ -95,7 +95,7 @@
   when: item.1 | length > 0
   tags:
     - checkmk-agent
-- name: Generate local checks async | TEMPLATE
+- name: Generate local/async checks | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_local_user }}"
     group: "{{ checkmk_agent_local_group }}"
@@ -132,7 +132,7 @@
   with_items: "{{ checkmk_agent_plugin_checks }}"
   tags:
     - checkmk-agent
-- name: Create directory - plugins - async | FILE
+- name: Create directory - plugins/async | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_plugin_user }}"
     group: "{{ checkmk_agent_plugin_group }}"
@@ -143,7 +143,7 @@
   when: item.1 | length > 0
   tags:
     - checkmk-agent
-- name: Generate plugins async | TEMPLATE
+- name: Generate plugins/async | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_plugin_user }}"
     group: "{{ checkmk_agent_plugin_group }}"
