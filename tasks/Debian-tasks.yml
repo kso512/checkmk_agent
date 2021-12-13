@@ -62,7 +62,7 @@
   ansible.builtin.file:
     path: "{{ checkmk_agent_local_path }}"
     state: absent
-  when: checkmk_agent_local_purge|bool == true
+  when: checkmk_agent_local_purge
   tags:
     - checkmk-agent
 - name: Create directory - local | FILE
@@ -110,7 +110,7 @@
   ansible.builtin.file:
     path: "{{ checkmk_agent_plugin_path }}"
     state: absent
-  when: checkmk_agent_plugin_purge|bool == true
+  when: checkmk_agent_plugin_purge
   tags:
     - checkmk-agent
 - name: Create directory - plugins | FILE
