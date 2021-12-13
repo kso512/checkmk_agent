@@ -54,9 +54,9 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 ## Version Matrix
 
-| CheckMK Raw Edition Version | Role Version |
+| CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ------------ |
-| 2.0.0p17 | 1.0.8 |
+| 2.0.0p17 | 1.0.8 - 1.0.9 |
 | 2.0.0p16 | 1.0.7 |
 | 2.0.0p15 | 1.0.6 |
 | 2.0.0p14 | 1.0.5 |
@@ -124,27 +124,27 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_cache_path | Full pathname of "cache" folder | `"{{ checkmk_agent_home }}/cache"` |
 | checkmk_agent_cache_user | Name of the user that should own the "cache" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_comment | Full name of the CheckMK Agent user | `"CheckMK Agent"` |
-| checkmk_agent_count_users_warn | Logged in users, warning threshold | `"10"` |
 | checkmk_agent_count_users_crit | Logged in users, critical threshold | `"15"` |
-| checkmk_agent_count_zombie_procs_warn | Zombie processes, warning threshold | `"5"` |
+| checkmk_agent_count_users_warn | Logged in users, warning threshold | `"10"` |
 | checkmk_agent_count_zombie_procs_crit | Zombie processes, critical threshold | `"10"` |
+| checkmk_agent_count_zombie_procs_warn | Zombie processes, warning threshold | `"5"` |
 | checkmk_agent_dest | Full pathname of the CheckMK Agent executable file | `"{{ checkmk_agent_home }}/check_mk_agent"` |
 | checkmk_agent_group | Name of the group that should own the CheckMK Agent executable file | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_home | Full pathname of the CheckMK Agent user home folder | `"/home/{{ checkmk_agent_user }}"` |
 | checkmk_agent_local_checks | List of checks to copy to the "local" folder | `"count_users"` `"count_zombie_procs"` |
-| checkmk_agent_local_checks_async | List of checks to copy to the "local" async folders | `"empty"` |
-| checkmk_agent_local_purge | Delete "local" folder before sync | false (default) |
+| checkmk_agent_local_checks_async | List of checks to copy to the "local" async folders | (See [NOTE A](https://github.com/kso512/checkmk_agent#note-a) below) |
 | checkmk_agent_local_group | Name of the group that should own the "local" folder and files | `"{{ checkmk_agent_local_user }}"` |
 | checkmk_agent_local_mode | File mode settings of the "local" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_local_path | Full pathname of "local" folder | `"{{ checkmk_agent_home }}/local"` |
+| checkmk_agent_local_purge | Delete "local" folder before sync | `false` |
 | checkmk_agent_local_user | Name of the user that should own the "local" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_mode | File mode settings of the CheckMK Agent executable file | `"0755"` |
-| checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `"lvm"` `"mk_inventory.linux"` `"mk_iptables"` `"mk_nfsiostat"` `"mk_sshd_config"` `"netstat.linux"` `"nfsexports"` `"smart"` |
-| checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders | `"empty"` |
-| checkmk_agent_plugin_purge | Delete "plugin" folder before sync | false (default) |
+| checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `"hpsa"` `"lvm"` `"mk_apt"` `"mk_inventory.linux"` `"mk_iptables"` `"mk_nfsiostat"` `"mk_sshd_config"` `"netstat.linux"` `"nfsexports"` `"smart"` |
+| checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders | [NOTE A](https://github.com/kso512/checkmk_agent#note-a) |
 | checkmk_agent_plugin_group | Name of the group that should own the "plugin" folder and files | `"{{ checkmk_agent_plugin_user }}"` |
 | checkmk_agent_plugin_mode | File mode settings of the "plugin" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_plugin_path | Full pathname of "plugin" folder | `"{{ checkmk_agent_home }}/plugins"` |
+| checkmk_agent_plugin_purge | Delete "plugin" folder before sync | `false` |
 | checkmk_agent_plugin_user | Name of the user that should own the "plugin" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_prereqs | List of packages needed for a successful installation | `"sudo"` |
 | checkmk_agent_src | Filename of the CheckMK Agent executable file template | `"check_mk_agent.linux.j2"` |
@@ -170,6 +170,25 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_win_install_src | Short file name of the CheckMK Agent installation file | `"check_mk_agent.msi"` |
 | checkmk_agent_win_plugins | List of Windows plugins to copy to the "plugin" folder" | `"mk_inventory.vbs"` `"windows_updates.vbs"` |
 | checkmk_agent_win_productid | Version-specific "Product ID" to install | `"{B6212139-D124-4782-8F81-05D08203092D}"` |
+
+### NOTE A
+
+`checkmk_agent_local_checks_async` and `checkmk_agent_plugin_checks_async` - List of checks to copy to the "plugin" async folders.  Per the [documentation](https://docs.checkmk.com/latest/en/localchecks.html#cache):
+
+> The output of local checks, like that of agent plug-ins, can be cached. This can be necessary if a script has a longer processing time. Such a script is then executed asynchronously and only in a defined time interval and the last output is cached. If the agent is queried again before the time expires, it uses this cache for the local check and returns it in the agent output.
+
+The format of these lists is as follows:
+
+    300:
+      - ""
+    600:
+      - ""
+    900:
+      - ""
+    1800:
+      - ""
+    86400:
+      - ""
 
 ## Dependencies
 
