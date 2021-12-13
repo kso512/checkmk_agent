@@ -56,7 +56,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ------------ |
-| 2.0.0p17 | 1.0.8 - 1.0.9 |
+| 2.0.0p17 | 1.0.8 - 1.0.10 |
 | 2.0.0p16 | 1.0.7 |
 | 2.0.0p15 | 1.0.6 |
 | 2.0.0p14 | 1.0.5 |
@@ -139,7 +139,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_local_purge | Delete "local" folder before sync | `false` |
 | checkmk_agent_local_user | Name of the user that should own the "local" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_mode | File mode settings of the CheckMK Agent executable file | `"0755"` |
-| checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `"hpsa"` `"lvm"` `"mk_apt"` `"mk_inventory.linux"` `"mk_iptables"` `"mk_nfsiostat"` `"mk_sshd_config"` `"netstat.linux"` `"nfsexports"` `"smart"` |
+| checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `"hpsa"` `"lvm"` `"mk_inventory.linux"` `"mk_iptables"` `"mk_nfsiostat"` `"mk_sshd_config"` `"netstat.linux"` `"nfsexports"` `"smart"` |
 | checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders | [NOTE A](https://github.com/kso512/checkmk_agent#note-a) |
 | checkmk_agent_plugin_group | Name of the group that should own the "plugin" folder and files | `"{{ checkmk_agent_plugin_user }}"` |
 | checkmk_agent_plugin_mode | File mode settings of the "plugin" folder and files | `"{{ checkmk_agent_mode }}"` |
@@ -177,7 +177,7 @@ Some of these may be seem redundant but are specified so future users can overri
 
 > The output of local checks, like that of agent plug-ins, can be cached. This can be necessary if a script has a longer processing time. Such a script is then executed asynchronously and only in a defined time interval and the last output is cached. If the agent is queried again before the time expires, it uses this cache for the local check and returns it in the agent output.
 
-The format of these lists is as follows:
+The format of these lists is as follows, with `checkmk_agent_plugin_checks_async` shown:
 
     300:
       - ""
@@ -188,7 +188,9 @@ The format of these lists is as follows:
     1800:
       - ""
     86400:
-      - ""
+      - "mk_apt"
+
+This runs the `mk_apt` plugin only once per day instead of every check. This shaves seconds off every remaining check of the day which uses the cached value.
 
 ## Dependencies
 
@@ -198,7 +200,7 @@ None yet defined.
 
 Example that uses a local `authorized_keys` file:
 
-    - hosts: servers
+    - hosts: checkmk-servers
       roles:
          - { role: kso512.checkmk_agent, checkmk_agent_authkey_src="local/authorized_keys.j2" }
 
@@ -208,4 +210,5 @@ Example that uses a local `authorized_keys` file:
 
 ## Author Information
 
-[@kso512](https://github.com/kso512)
+- [@kso512](https://github.com/kso512)
+- [@iamdevnull](https://github.com/iamdevnull)
