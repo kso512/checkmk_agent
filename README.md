@@ -56,7 +56,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ------------ |
-| 2.0.0p17 | 1.0.8 - 1.0.10 |
+| 2.0.0p17 | 1.0.8 - 1.0.11 |
 | 2.0.0p16 | 1.0.7 |
 | 2.0.0p15 | 1.0.6 |
 | 2.0.0p14 | 1.0.5 |
@@ -140,7 +140,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_local_user | Name of the user that should own the "local" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_mode | File mode settings of the CheckMK Agent executable file | `"0755"` |
 | checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `"hpsa"` `"lvm"` `"mk_inventory.linux"` `"mk_iptables"` `"mk_nfsiostat"` `"mk_sshd_config"` `"netstat.linux"` `"nfsexports"` `"smart"` |
-| checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders | [NOTE A](https://github.com/kso512/checkmk_agent#note-a) |
+| checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders | (See [NOTE A](https://github.com/kso512/checkmk_agent#note-a) below) |
 | checkmk_agent_plugin_group | Name of the group that should own the "plugin" folder and files | `"{{ checkmk_agent_plugin_user }}"` |
 | checkmk_agent_plugin_mode | File mode settings of the "plugin" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_plugin_path | Full pathname of "plugin" folder | `"{{ checkmk_agent_home }}/plugins"` |
@@ -163,6 +163,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `"99_cmkagent.j2"` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `"cmkagent"` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `"2.0.0p17"` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `"check_mk.user.yml.j2"` |
 | checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `"C:\\ProgramData\\checkmk\\agent\\"` |
@@ -180,7 +181,7 @@ Some of these may be seem redundant but are specified so future users can overri
 The format of these lists is as follows, with `checkmk_agent_plugin_checks_async` shown:
 
     300:
-      - ""
+      - "apache_status.py"
     600:
       - ""
     900:
@@ -189,8 +190,9 @@ The format of these lists is as follows, with `checkmk_agent_plugin_checks_async
       - ""
     86400:
       - "mk_apt"
+      - "mk_docker.py"
 
-This runs the `mk_apt` plugin only once per day instead of every check. This shaves seconds off every remaining check of the day which uses the cached value.
+This runs the `apache_status.py` plugin only once per five minutes, and the `mk_apt` and `mk_docker.py` plugins only once per day, instead of every check. This shaves seconds off every remaining check of the day which uses the cached value.
 
 ## Dependencies
 
