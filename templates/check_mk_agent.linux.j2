@@ -17,7 +17,7 @@ PATH=$PATH:/usr/local/bin
 export MK_LIBDIR=${MK_LIBDIR:-"{{ checkmk_agent_home }}"}
 export MK_CONFDIR=${MK_CONFDIR:-"{{ checkmk_agent_home }}"}
 export MK_VARDIR=${MK_VARDIR:-"{{ checkmk_agent_home }}"}
-{% raw %}  
+
 # Optionally set a tempdir for all subsequent calls
 #export TMPDIR=
 
@@ -193,7 +193,7 @@ section_checkmk() {
     echo "SpoolDirectory: $SPOOLDIR"
     echo "PluginsDirectory: $PLUGINSDIR"
     echo "LocalDirectory: $LOCALDIR"
-
+{% raw %}
     # If we are called via xinetd, try to find only_from configuration
     if [ -n "$REMOTE_HOST" ]; then
         sed -n "/^service[[:space:]]*${XINETD_SERVICE_NAME}/,/}/s/^[[:space:]]*only_from[[:space:]]*=[[:space:]]*\(.*\)/OnlyFrom: \1/p" /etc/xinetd.d/* | head -n1
