@@ -82,7 +82,7 @@ checkmk_agent_sudo_owner: "root"
 checkmk_agent_sudo_src: "99_cmkagent.j2"
 checkmk_agent_sudo_validate: 'visudo -cf %s'
 checkmk_agent_user: "cmkagent"
-checkmk_agent_version: "2.0.0p18"
+checkmk_agent_version: "2.0.0p19"
 checkmk_agent_win_config_dest: "{{ checkmk_agent_win_data_folder }}check_mk.user.yml"
 checkmk_agent_win_config_src: "check_mk.user.yml.j2"
 checkmk_agent_win_data_folder: "C:\\ProgramData\\checkmk\\agent\\"

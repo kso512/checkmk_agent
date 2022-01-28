@@ -139,6 +139,16 @@ else
     unset IS_LXC_CONTAINER
 fi
 
+if [ -n "$IS_DOCKERIZED" ] || [ -n "$IS_LXC_CONTAINER" ]; then
+    if [ "$(stat -fc'%t' /sys/fs/cgroup)" = "63677270" ]; then
+        IS_CGROUP_V2=1
+        CGROUP_SECTION_SUFFIX="_cgroupv2"
+    else
+        unset IS_CGROUP_V2
+        unset CGROUP_SECTION_SUFFIX
+    fi
+fi
+
 # Prefer (relatively) new /usr/bin/timeout from coreutils against
 # our shipped waitmax. waitmax is statically linked and crashes on
 # some Ubuntu versions recently.
@@ -234,10 +244,16 @@ section_labels() {
 
 section_mem() {
     if [ -n "$IS_DOCKERIZED" ]; then
-        echo '<<<docker_container_mem>>>'
-        cat /sys/fs/cgroup/memory/memory.stat
-        echo "usage_in_bytes $(cat /sys/fs/cgroup/memory/memory.usage_in_bytes)"
-        echo "limit_in_bytes $(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)"
+        echo "<<<docker_container_mem$CGROUP_SECTION_SUFFIX>>>"
+        if [ -n "$IS_CGROUP_V2" ]; then
+            cat /sys/fs/cgroup/memory.stat
+            echo "memory.current $(cat /sys/fs/cgroup/memory.current)"
+            echo "memory.max $(cat /sys/fs/cgroup/memory.max)"
+        else
+            cat /sys/fs/cgroup/memory/memory.stat
+            echo "usage_in_bytes $(cat /sys/fs/cgroup/memory/memory.usage_in_bytes)"
+            echo "limit_in_bytes $(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)"
+        fi
         grep -F 'MemTotal:' /proc/meminfo
     elif [ -n "$IS_LXC_CONTAINER" ]; then
         echo '<<<mem>>>'
@@ -264,13 +280,19 @@ section_cpu() {
         fi
     else
         if [ -n "$IS_DOCKERIZED" ]; then
-            echo '<<<docker_container_cpu>>>'
+            echo "<<<docker_container_cpu$CGROUP_SECTION_SUFFIX>>>"
         else
-            echo '<<<lxc_container_cpu>>>'
+            echo "<<<lxc_container_cpu$CGROUP_SECTION_SUFFIX>>>"
         fi
-        grep "^cpu " /proc/stat
-        echo "num_cpus $NUM_CPUS"
-        cat /sys/fs/cgroup/cpuacct/cpuacct.stat
+        if [ -n "$IS_CGROUP_V2" ]; then
+            echo "uptime $(cat /proc/uptime)"
+            echo "num_cpus $NUM_CPUS"
+            cat /sys/fs/cgroup/cpu.stat
+        else
+            grep "^cpu " /proc/stat
+            echo "num_cpus $NUM_CPUS"
+            cat /sys/fs/cgroup/cpuacct/cpuacct.stat
+        fi
     fi
 }
 
@@ -470,13 +492,18 @@ section_diskstat() {
             stat -c "%t %T %n" /dev/vx/dsk/*/*
         fi
     else
-        echo '<<<docker_container_diskstat>>>'
+        echo "<<<docker_container_diskstat$CGROUP_SECTION_SUFFIX>>>"
         echo "[time]"
         date +%s
-        for F in io_service_bytes io_serviced; do
-            echo "[$F]"
-            cat "/sys/fs/cgroup/blkio/blkio.throttle.$F"
-        done
+        if [ -n "$IS_CGROUP_V2" ]; then
+            echo "[io.stat]"
+            cat "/sys/fs/cgroup/io.stat"
+        else
+            for F in io_service_bytes io_serviced; do
+                echo "[$F]"
+                cat "/sys/fs/cgroup/blkio/blkio.throttle.$F"
+            done
+        fi
         echo "[names]"
         for F in /sys/block/*; do
             echo "${F##*/} $(cat "$F/dev")"
@@ -1382,10 +1409,10 @@ run_cached() {
                 CACHE_INFO="cached($MTIME,$MAXAGE)"
                 if [[ $NAME == local_* ]]; then
                     # prefix CACHE_INFO, but skip any headers and lines with existing CACHE_INFO
-                    sed -e "/^<<<.*>>>/n; /^cached([0-9]*,[0-9]*)/n; s/^/${CACHE_INFO} /" "${CACHEFILE}"
+                    sed -e "/^<<<.*>>>/{p;d;}; /^cached([0-9]*,[0-9]*)/{p;d;}; s/^/${CACHE_INFO} /" "${CACHEFILE}"
                 else
                     # insert CACHE_INFO in header, but skip headers with existing CACHE_INFO
-                    sed -e '/^<<<.*\(:cached(\).*>>>/n; s/^<<<\([^>]*\)>>>$/<<<\1:'"${CACHE_INFO}"'>>>/' "${CACHEFILE}"
+                    sed -e '/^<<<.*\(:cached(\).*>>>/{p;d;}; s/^<<<\([^>]*\)>>>$/<<<\1:'"${CACHE_INFO}"'>>>/' "${CACHEFILE}"
                 fi
             fi
         fi
