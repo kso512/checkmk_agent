@@ -4,9 +4,10 @@ galaxy_info:
   description: A role to install CheckMK RAW edition agent.
   company: Uplight, Inc.
   license: GPLv2
-  min_ansible_version: 2.10.5
-  role_name: checkmk_agent
+  min_ansible_version: 2.11.5
   namespace: kso512
+  role_name: checkmk_agent
+  github_branch: main
   platforms:
     - name: Debian
       versions:
