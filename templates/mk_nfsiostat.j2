@@ -12,8 +12,7 @@
 # shellcheck disable=SC2034
 CMK_VERSION="{{ checkmk_agent_version }}"
 
-if command nfsiostat > /dev/null ; then
+if command nfsiostat >/dev/null; then
     echo '<<<nfsiostat>>>'
     nfsiostat | paste -sd " " - | tr -s ' '
 fi
-

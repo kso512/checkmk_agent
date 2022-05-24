@@ -13,11 +13,9 @@
 CMK_VERSION="{{ checkmk_agent_version }}"
 
 # iptables
-if type iptables-save > /dev/null
-then
-        echo "<<<iptables>>>"
-        # output filter configuration without table name, comments and
-        # status data, i.e. lines beginning with '*', '#' or ':'.
-        iptables-save -t filter | sed '/^[#*:]/d'
+if type iptables-save >/dev/null; then
+    echo "<<<iptables>>>"
+    # output filter configuration without table name, comments and
+    # status data, i.e. lines beginning with '*', '#' or ':'.
+    iptables-save -t filter | sed '/^[#*:]/d'
 fi
-

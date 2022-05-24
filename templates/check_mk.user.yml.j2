@@ -106,6 +106,7 @@ global:
     #    - fileinfo 
     #    - logwatch 
     #    - openhardwaremonitor 
+        - agent_plugins
 
     # Useful example
     # sections: ~   # <--- this line is skipped as undefined
@@ -148,7 +149,10 @@ global:
             - winperf_processor
 
     # In seconds. Windows may be slow during WMI, increase the value when you have problems
-    # wmi_timeout: 3 
+    # wmi_timeout: 5
+
+    # cpuload_method: 'use_perf' # set use_wmi if you have serious problems with the section
+
 
     # -------------------------------------------------------------- 
     # Internal log of agent
@@ -219,9 +223,13 @@ fileinfo:
 logwatch:
     # enabled: yes
     
-    # sendall: no   # this is MANDATORY
+    # sendall: no   # this is MANDATORY, yes is useful only for debugging
     # vista_api: no # this is RECOMMENDED
+    # skip_duplicated: no # if yes the same messages will be replaced with text [the above messages repeated <n> times]
     # max_size: 500000 # default value
+    # max_line_length: -1 # -1 to ignore, or any positive, max length of the line
+    # max_entries: -1     # -1 to ignore, or any positive, max count of lines to receive
+    # timeout: -1         # -1 to ignore, or any positive, in seconds
 
      # entries in the windows eventlog
     logfile:
@@ -352,6 +360,16 @@ modules:
 
 system:
     enabled: yes
+
+    #controller:
+    #    run: yes        # start controller if controller presented
+    #    check: yes                          # if yes that only the controller process connections could access agent monitoring data
+                                             # set no if monitoring is lost and in log you find 'Connection forbidden: address'
+    #    force_legacy: no                    # if yes always created for version with controller
+    #    agent_channel: "localhost:50001"    # for controller
+    #    local_only: no                      # bind to 127.0.0.1 or 0.0.0.0
+    #    on_crash: "ignore"                  # possible values "ignore" or "emergency_mode". This is safety switch.
+                                             # Use "emergency_mode" if controller crashes/disappear
 
     #firewall:
     #    mode: configure # allowed none, remove, configure
