@@ -105,10 +105,10 @@ set_variable_defaults() {
     : "${MK_VARDIR:="/var/lib/check_mk_agent"}"
     : "${MK_LOGDIR:="/var/log/check_mk_agent"}"
 
-    export MK_LIBDIR=${MK_LIBDIR:-"{{ checkmk_agent_home }}"}
-    export MK_CONFDIR=${MK_CONFDIR:-"{{ checkmk_agent_home }}"}
-    export MK_VARDIR=${MK_VARDIR:-"{{ checkmk_agent_home }}"}
-    export MK_LOGDIR=${MK_LOGDIR:-"{{ checkmk_agent_home }}"}
+    export MK_LIBDIR="{{ checkmk_agent_home }}"
+    export MK_CONFDIR="{{ checkmk_agent_home }}"
+    export MK_VARDIR="{{ checkmk_agent_home }}"
+    export MK_LOGDIR="{{ checkmk_agent_home }}"
 
     # Optionally set a tempdir for all subsequent calls
     #export TMPDIR=
