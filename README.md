@@ -54,11 +54,11 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.1.0p6 | 1.0.29 |
 | 2.1.0p4 | 1.0.28 |
 | 2.1.0p3 | 1.0.27 |
 | 2.1.0p2 | 1.0.26 |
 | 2.1.0p1 | 1.0.25 |
-| 2.1.0 | 1.0.23 - 1.0.24 |
 
 ## Requirements
 
@@ -157,7 +157,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `"99_cmkagent.j2"` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `"cmkagent"` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `"2.1.0p4"` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `"2.1.0p6"` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `"check_mk.user.yml.j2"` |
 | checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `"C:\\ProgramData\\checkmk\\agent\\"` |
