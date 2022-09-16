@@ -54,11 +54,11 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.1.0p12 | 1.0.34 |
 | 2.1.0p11 | 1.0.33 |
 | 2.1.0p10 | 1.0.32 |
 | 2.1.0p9 | 1.0.31 |
 | 2.1.0p8 | 1.0.30 |
-| 2.1.0p7 | [N/A](https://forum.checkmk.com/t/release-checkmk-stable-release-2-1-0p7/32704/2) |
 
 ## Requirements
 
