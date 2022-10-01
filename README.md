@@ -14,7 +14,6 @@ All tasks are tagged with `checkmk-agent`.
 
 The following distributions have been tested automatically and continuously integrated:
 
-- [Debian 9 "Stretch"](https://www.debian.org/releases/stretch/)
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
 - [Ubuntu 18.04 LTS "Bionic Beaver"](http://releases.ubuntu.com/bionic/)
