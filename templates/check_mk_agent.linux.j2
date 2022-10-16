@@ -551,12 +551,13 @@ section_df() {
 section_systemd() {
     if inpath systemctl; then
         echo '<<<systemd_units>>>'
+        # use plain to force ASCII output that is simpler to parse
         echo "[list-unit-files]"
-        systemctl list-unit-files --no-pager | tr -s ' '
+        systemctl list-unit-files --full --no-legend --no-pager --plain --type service | tr -s ' '
         echo "[status]"
         systemctl status --all --type service --no-pager --lines 0 | tr -s ' '
         echo "[all]"
-        systemctl --all --no-pager | sed '/^$/q' | tr -s ' '
+        systemctl --all --full --no-legend --no-pager --plain --type service | sed '/^$/q' | tr -s ' '
     fi
 }
 
@@ -1439,7 +1440,9 @@ run_real_time_checks() {
     define_optionally_encrypt "${ENCRYPTED_RT}"
     for trigger in "${MK_VARDIR}/rtc_remotes/"?*; do
         # no such file => no expansion of ?* => nothing to do
-        [ -e "${trigger}" ] && run_real_time_checks_for_remote "${trigger}" "${secret}" >/dev/null &
+        # braces are needed so run_real_time_checks_for_remote can be forked away
+        # otherwise async execution of check plugins is held off by activated realtime checks.
+        [ -e "${trigger}" ] && { run_real_time_checks_for_remote "${trigger}" "${secret}" >/dev/null & }
     done
 }
 
@@ -1524,7 +1527,7 @@ run_remote_plugins() {
         cmdline="${rest#(*) }"
 
         if [ -n "${prefix}" ]; then
-            cmdline="${prefix}'${cmdline}'"
+            cmdline="${prefix} '${cmdline}'"
         fi
 
         if [ -z "${interval}" ]; then
@@ -1542,7 +1545,7 @@ run_runas_executor() {
     _non_comment_lines "${MK_CONFDIR}/runas.cfg" | while read -r type user configfile; do
         prefix=""
         if [ "${user}" != "-" ]; then
-            prefix="su ${user} -c "
+            prefix="su ${user} -c"
         fi
 
         # mrpe includes
@@ -1559,12 +1562,13 @@ run_runas_executor() {
                 find "${configfile}/" -executable -type f |
                     while read -r filename; do
                         if [ -n "${prefix}" ]; then
-                            cmdline="${prefix}\"${filename}\""
+                            # SC2086: We don't want to quote since prefix should not be treated as a
+                            # single string but as multiple arguments passed to _log_section_time
+                            # shellcheck disable=SC2086
+                            _log_section_time ${prefix} "${filename}"
                         else
-                            cmdline=${filename}
+                            _log_section_time "${filename}"
                         fi
-
-                        _log_section_time "${cmdline}"
                     done
             fi
         fi
