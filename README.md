@@ -27,6 +27,7 @@ The following distributions have been tested automatically and continuously inte
 
 The remaining supported operating systems are tested manually:
 
+- [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
 
 For performance reasons, the following "sections" have been disabled in the Windows agent:

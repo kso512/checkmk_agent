@@ -18,6 +18,7 @@ jobs:
         include:
           - distro: debian10
           - distro: debian11
+          - distro: fedora37
           - distro: ubuntu1804
           - distro: ubuntu2004
     steps:
