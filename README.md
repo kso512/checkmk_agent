@@ -20,6 +20,7 @@ The following distributions have been tested automatically and continuously inte
 - [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Ubuntu 18.04 LTS "Bionic Beaver"](http://releases.ubuntu.com/bionic/)
 - [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
+- [Ubuntu 22.04 LTS "Jammy Jellyfish"](http://releases.ubuntu.com/jammy/)
 
 ...using the following technologies:
 

@@ -20,6 +20,7 @@ galaxy_info:
       versions:
         - bionic
         - focal
+        - jammy
     - name: Windows
       versions:
         - "2019"
