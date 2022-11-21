@@ -16,6 +16,8 @@ The following distributions have been tested automatically and continuously inte
 
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
+- [Fedora 36](https://docs.fedoraproject.org/en-US/fedora/f36/release-notes/)
+- [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Ubuntu 18.04 LTS "Bionic Beaver"](http://releases.ubuntu.com/bionic/)
 - [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
 
@@ -27,7 +29,6 @@ The following distributions have been tested automatically and continuously inte
 
 The remaining supported operating systems are tested manually:
 
-- [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
 
 For performance reasons, the following "sections" have been disabled in the Windows agent:
@@ -54,7 +55,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.1.0p16 | 1.0.39 |
+| 2.1.0p16 | 1.0.39 - 1.0.40 |
 | 2.1.0p15 | 1.0.38 |
 | 2.1.0p14 | 1.0.37 |
 | 2.1.0p13 | 1.0.35 - 1.0.36 |
