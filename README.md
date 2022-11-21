@@ -56,7 +56,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.1.0p16 | 1.0.39 - 1.0.40 |
+| 2.1.0p16 | 1.0.39 - 1.0.41 |
 | 2.1.0p15 | 1.0.38 |
 | 2.1.0p14 | 1.0.37 |
 | 2.1.0p13 | 1.0.35 - 1.0.36 |
