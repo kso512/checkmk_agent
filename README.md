@@ -2,7 +2,7 @@
 
 [![Ansible role quality](https://img.shields.io/ansible/quality/56196)](https://galaxy.ansible.com/kso512/checkmk_agent) [![Ansible role downloads](https://img.shields.io/ansible/role/d/56196)](https://galaxy.ansible.com/kso512/checkmk_agent) [![GitHub repo size](https://img.shields.io/github/repo-size/kso512/checkmk_agent)](https://github.com/kso512/checkmk_agent)
 
-[![CI](https://github.com/kso512/checkmk_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/kso512/checkmk_agent/actions/workflows/ci.yml) [![Release](https://github.com/kso512/checkmk_agent/actions/workflows/release.yml/badge.svg)](https://github.com/kso512/checkmk_agent/actions/workflows/release.yml) [![GitHub issues](https://img.shields.io/github/issues-raw/kso512/checkmk_agent)](https://github.com/kso512/checkmk_agent)
+[![Release](https://github.com/kso512/checkmk_agent/actions/workflows/release.yml/badge.svg)](https://github.com/kso512/checkmk_agent/actions/workflows/release.yml) [![GitHub issues](https://img.shields.io/github/issues-raw/kso512/checkmk_agent)](https://github.com/kso512/checkmk_agent)
 
 [![made-with-bash](https://img.shields.io/badge/Made%20with-Bash-1f425f.svg)](https://www.gnu.org/software/bash/) [![made-with-Markdown](https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg)](http://commonmark.org) [![GitHub](https://img.shields.io/github/license/kso512/checkmk_agent)](https://www.gnu.org/licenses/gpl-2.0.txt)
 
@@ -22,7 +22,6 @@ The following distributions have been tested automatically and continuously inte
 ...using the following technologies:
 
 - [Molecule playbook testing](https://github.com/geerlingguy/molecule-playbook-testing) by [@geerlingguy](https://github.com/geerlingguy)
-- [GitHub Actions](https://github.com/features/actions)
 - [docker-systemctl-replacement](https://github.com/gdraheim/docker-systemctl-replacement) by [@gdraheim](https://github.com/gdraheim)
 
 The remaining supported operating systems are tested manually:
@@ -56,11 +55,11 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.1.0p21 | 1.0.46 |
 | 2.1.0p20 | 1.0.45 |
 | 2.1.0p19 | 1.0.44 |
 | 2.1.0p18 | 1.0.43 |
 | 2.1.0p17 | 1.0.42 |
-| 2.1.0p16 | 1.0.39 - 1.0.41 |
 
 ## Requirements
 
@@ -159,7 +158,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `"99_cmkagent.j2"` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `"cmkagent"` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `"2.1.0p20"` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `"2.1.0p21"` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `"check_mk.user.yml.j2"` |
 | checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `"C:\\ProgramData\\checkmk\\agent\\"` |
