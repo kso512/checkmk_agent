@@ -55,7 +55,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.1.0p25 | 1.0.50 |
+| 2.1.0p25 | 1.0.50 - 1.0.51 |
 | 2.1.0p24 | 1.0.49 |
 | 2.1.0p23 | 1.0.48 |
 | 2.1.0p22 | 1.0.47 |
@@ -193,13 +193,25 @@ This runs the `apache_status.py` plugin only once per five minutes, and the `mk_
 
 None yet defined.
 
-## Example Playbook
+## Example Playbook and Invocation
 
 Example that uses a local `authorized_keys` file:
 
-    - hosts: checkmk-servers
+    - hosts: all
       roles:
          - { role: kso512.checkmk_agent, checkmk_agent_authkey_src="local/authorized_keys.j2" }
+
+Example that purges the `plugin` folder before re-creating it:
+
+    $ ansible-playbook site.yml -t checkmk-agent -e "checkmk_agent_plugin_purge=true"
+    
+    ...
+
+    TASK [kso512.checkmk_agent : Delete directory - plugins | FILE] ***********
+    changed: [instance]
+    
+    TASK [kso512.checkmk_agent : Create directory - plugins | FILE] ***********
+    changed: [instance]
 
 ## License
 
