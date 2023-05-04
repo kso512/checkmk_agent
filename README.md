@@ -55,11 +55,11 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.1.0p26 | 1.0.54 |
-| 2.1.0p25 | 1.0.50 - 1.0.53 |
-| 2.1.0p24 | 1.0.49 |
-| 2.1.0p23 | 1.0.48 |
-| 2.1.0p22 | 1.0.47 |
+| 2.1.0p27                    | 1.0.55           |
+| 2.1.0p26                    | 1.0.54           |
+| 2.1.0p25                    | 1.0.50 - 1.0.53  |
+| 2.1.0p24                    | 1.0.49           |
+| 2.1.0p23                    | 1.0.48           |
 
 ## Requirements
 
@@ -124,6 +124,11 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_count_zombie_procs_crit | Zombie processes, critical threshold | `"10"` |
 | checkmk_agent_count_zombie_procs_warn | Zombie processes, warning threshold | `"5"` |
 | checkmk_agent_dest | Full pathname of the CheckMK Agent executable file | `"{{ checkmk_agent_home }}/check_mk_agent"` |
+| checkmk_agent_docker_dest | Full pathname of the Docker configuration file | `"{{ checkmk_agent_home }}/docker.cfg"` |
+| checkmk_agent_docker_group | Name of the group that should own the Docker configuration file | `"{{ checkmk_agent_group }}"` |
+| checkmk_agent_docker_mode | File mode settings of the Docker configuration file | `"0644"` |
+| checkmk_agent_docker_src | Filename of the Docker configuration file template | `"docker.cfg.j2"` |
+| checkmk_agent_docker_user | Filename of the Docker configuration file template | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_group | Name of the group that should own the CheckMK Agent executable file | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_home | Full pathname of the CheckMK Agent user home folder | `"/home/{{ checkmk_agent_user }}"` |
 | checkmk_agent_local_checks | List of checks to copy to the "local" folder | `"count_users"` `"count_zombie_procs"` |
@@ -158,7 +163,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `"99_cmkagent.j2"` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `"cmkagent"` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `"2.1.0p26"` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `"2.1.0p27"` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `"check_mk.user.yml.j2"` |
 | checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `"C:\\ProgramData\\checkmk\\agent\\"` |
