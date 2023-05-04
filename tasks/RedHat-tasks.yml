@@ -30,6 +30,15 @@
     dest: "{{ checkmk_agent_dest }}"
   tags:
     - checkmk-agent
+- name: Copy Docker configuration file | TEMPLATE
+  ansible.builtin.template:
+    owner: "{{ checkmk_agent_docker_user }}"
+    group: "{{ checkmk_agent_docker_group }}"
+    mode: "{{ checkmk_agent_docker_mode }}"
+    src: "{{ checkmk_agent_docker_src }}"
+    dest: "{{ checkmk_agent_docker_dest }}"
+  tags:
+    - checkmk-agent
 - name: Grant sudo for check_mk_agent to monitoring user | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_sudo_owner }}"
