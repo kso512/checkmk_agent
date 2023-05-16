@@ -1,6 +1,6 @@
 #!/bin/bash
 # {{ ansible_managed }}
-# Copyright (C) 2019 tribe29 GmbH - License: GNU General Public License v2
+# Copyright (C) 2019 Checkmk GmbH - License: GNU General Public License v2
 # This file is part of Checkmk (https://checkmk.com). It is subject to the terms and
 # conditions defined in the file COPYING, which is part of this source code package.
 
@@ -53,8 +53,7 @@ set_up_process_commandline_arguments() {
         case "${1}" in
             -d | --debug)
                 set -xv
-                # restore stderr
-                exec 2>&9
+                DISABLE_STDERR=false
                 shift
                 ;;
 
@@ -1997,10 +1996,15 @@ main_setup() {
 
     set_up_remote
 
-    # close stdin and tempotarily disable stderr
-    exec </dev/null 9>&2 2>/dev/null
+    # close stdin
+    exec </dev/null
 
     set_up_process_commandline_arguments "$@"
+
+    # close stderr unless explicitly configured to stay open
+    if "${DISABLE_STDERR:-true}"; then
+        exec 2>/dev/null
+    fi
 
     set_up_get_epoch
 
