@@ -118,10 +118,10 @@ set_variable_defaults() {
     : "${MK_LOGDIR:="/var/log/check_mk_agent"}"
     : "${MK_BIN:="/usr/bin"}"
 
-    export MK_LIBDIR
-    export MK_CONFDIR
-    export MK_VARDIR
-    export MK_LOGDIR
+    export MK_LIBDIR="{{ checkmk_agent_home }}"
+    export MK_CONFDIR="{{ checkmk_agent_home }}"
+    export MK_VARDIR="{{ checkmk_agent_home }}"
+    export MK_LOGDIR="{{ checkmk_agent_home }}"
     export MK_BIN
 
     # Optionally set a tempdir for all subsequent calls
