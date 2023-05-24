@@ -336,21 +336,26 @@ local:
 mrpe:
     # enabled: yes
 
-    # 60 is default, this is safe value, because mrpe checks are relative fast ergo
-    # hitting this timeout is virtually not possible
+    ## Timeout value (seconds) - Defaults to 60, which can be considered a safe choice,
+    ## as legacy Nagios checks usually execute fastly.
     # timeout: 60
 
-    # entries and cfg are the same as in the Legacy agent
     config:
-        # *Relative* path are supported for checks and includes
-        # Path below is equal to '$CUSTOM_AGENT_PATH$\plugins\your_check.com'
-        # - check = Console 'plugins\your_check.com' CON CP /STATUS
+        ## MRPE check entries:
+        ##  check = SERVICE_DESCRIPTION [(interval=INTERVAL)] COMMAND
+        ## If specified, the check result will be cached for INTERVAL seconds
+        ## before executing it again.
+        ## Relative path are supported for checks and includes.
+        ## The path below is equal to '$CUSTOM_AGENT_PATH$\plugins\your_check.com'
+        # - check = Service_Description 'plugins\your_check.ps1' CON CP /STATUS
         # - check = Console 'c:\windows\system32\mode.com' CON CP /STATUS
-        # Special case with cache time and add or not cache time info to the output
-        #       Description (max_age:add_info) command line  
-        # - check = Checker (100:yes) 'c:\windows\system32\mode.com' 
-        # - include user_name = $CUSTOM_AGENT_PATH$\mrpe_checks.cfg
+        # - check = Checker (interval=100) 'c:\windows\system32\mode.com'
+
+        ## Include entries:
+        ##  include [USER_NAME] = PATH_TO_CFG
+        ## Add config files that contain additional MRPE check lines
         # - include = $CUSTOM_AGENT_PATH$\mrpe_checks.cfg
+        # - include some_user_name = $CUSTOM_AGENT_PATH$\mrpe_checks.cfg
 
 
 modules:
@@ -365,11 +370,13 @@ system:
     enabled: yes
 
     #controller:
-    #    run: yes        # start controller if controller presented
+    #    run: yes                            # start controller if present
+    #    detect_proxy: no                    # controller runtime option, see CLI for more information
+    #    validate_api_cert: no               # controller runtime option, see CLI for more information
     #    check: yes                          # if yes that only the controller process connections could access agent monitoring data
                                              # set no if monitoring is lost and in log you find 'Connection forbidden: address'
     #    force_legacy: no                    # if yes always created for version with controller
-    #    agent_channel: "localhost:28250"    # for controller
+    #    agent_channel: "mailslot"           # as fallback you may use also TCP-IP "localhost:ip_port", default "mailslot"
     #    local_only: no                      # bind to 127.0.0.1 or 0.0.0.0
     #    on_crash: "ignore"                  # possible values "ignore" or "emergency_mode". This is safety switch.
                                              # Use "emergency_mode" if controller crashes/disappear

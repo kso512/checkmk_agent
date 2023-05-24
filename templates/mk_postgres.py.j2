@@ -25,7 +25,16 @@ import subprocess
 import sys
 
 try:
-    from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
+    from typing import (  # noqa: F401 # pylint: disable=unused-import
+        Any,
+        Callable,
+        Dict,
+        Iterable,
+        List,
+        Optional,
+        Sequence,
+        Tuple,
+    )
 except ImportError:
     # We need typing only for testing
     pass
@@ -43,10 +52,35 @@ OS = platform.system()
 IS_LINUX = OS == "Linux"
 IS_WINDOWS = OS == "Windows"
 LOGGER = logging.getLogger(__name__)
+LINUX_PROCESS_MATCH_PATTERNS = [
+    re.compile(pattern)
+    for pattern in [
+        "(.*)bin/postgres(.*)",
+        "(.*)bin/postmaster(.*)",
+        "(.*)bin/edb-postgres(.*)",
+        "^[0-9]+ postgres(.*)",
+        "^[0-9]+ postmaster(.*)",
+        "^[0-9]+ edb-postgres(.*)",
+    ]
+]
+WINDOWS_PROCESS_MATCH_PATTERNS = [
+    re.compile(pattern)
+    for pattern in [
+        r"(.*)bin\\postgres(.*)",
+        r"(.*)bin\\postmaster(.*)",
+        r"(.*)bin\\edb-postgres(.*)",
+    ]
+]
+
+if sys.version_info[0] >= 3:
+    UTF_8_NEWLINE_CHARS = re.compile(r"[\n\r\u2028\u000B\u0085\u2028\u2029]+")
+else:
+    UTF_8_NEWLINE_CHARS = re.compile(u"[\u000A\u000D\u2028\u000B\u0085\u2028\u2029]+")  # fmt: skip
 
 
 class OSNotImplementedError(NotImplementedError):
     def __str__(self):
+        # type: () -> str
         return "The OS type ({}) is not yet implemented.".format(platform.system())
 
 
@@ -56,6 +90,7 @@ elif IS_WINDOWS:
     import time
 else:
     raise OSNotImplementedError
+
 
 # for compatibility with python 2.6
 def subprocess_check_output(args):
@@ -91,8 +126,8 @@ class PostgresBase:
     __metaclass__ = abc.ABCMeta
     _supported_pg_versions = ["12"]
 
-    def __init__(self, db_user, instance):
-        # type: (str, Dict) -> None
+    def __init__(self, db_user, instance, process_match_patterns):
+        # type: (str, Dict, Sequence[re.Pattern]) -> None
         self.db_user = db_user
         self.name = instance["name"]
         self.pg_user = instance["pg_user"]
@@ -107,6 +142,7 @@ class PostgresBase:
         self.psql_binary_path = self.get_psql_binary_path()
         self.psql_binary_dirname = self.get_psql_binary_dirname()
         self.conn_time = ""  # For caching as conn_time and version are in one query
+        self.process_match_patterns = process_match_patterns
 
     @abc.abstractmethod
     def run_sql_as_db_user(
@@ -202,7 +238,7 @@ class PostgresBase:
                 "SELECT datname, datid, usename, client_addr, state AS state, "
                 "COALESCE(ROUND(EXTRACT(epoch FROM now()-query_start)),0) "
                 "AS seconds, pid, "
-                "regexp_replace(query, E'[\\n\\r\\u2028]+', ' ', 'g' ) "
+                "query "
                 "AS current_query FROM pg_stat_activity "
                 "WHERE (query_start IS NOT NULL AND "
                 "(state NOT LIKE 'idle%' OR state IS NULL)) "
@@ -213,8 +249,7 @@ class PostgresBase:
             querytime_sql_cmd = (
                 "SELECT datname, datid, usename, client_addr, '' AS state,"
                 " COALESCE(ROUND(EXTRACT(epoch FROM now()-query_start)),0) "
-                "AS seconds, procpid as pid, regexp_replace(current_query, "
-                "E'[\\n\\r\\u2028]+', ' ', 'g' ) AS current_query "
+                "AS seconds, procpid as pid, query AS current_query "
                 "FROM pg_stat_activity WHERE "
                 "(query_start IS NOT NULL AND current_query NOT LIKE '<IDLE>%') "
                 "ORDER BY query_start, procpid DESC;"
@@ -267,6 +302,21 @@ class PostgresBase:
         )
 
         sys.stdout.write("%s\n" % ensure_str(out))
+
+    def is_postgres_process(self, process):
+        # type: (str) -> bool
+        """Determine whether a process is a PostgreSQL process.
+
+        Note that the relevant binaries are contained in PATH under Linux, so they
+        may or may not be called using the full path. Starting from PostgreSQL
+        verion >= 13, they are not called using the full path.
+
+        Examples:
+
+        1252 /usr/bin/postmaster -D /var/lib/pgsql/data
+        3148 postmaster -D /var/lib/pgsql/data
+        """
+        return any(re.search(p, process) for p in self.process_match_patterns)
 
     def execute_all_queries(self):
         """Executes all queries and writes the output formatted to stdout"""
@@ -346,6 +396,24 @@ class PostgresBase:
             sys.stdout.write("%s\n" % out)
 
 
+def _sanitize_sql_query(out):
+    # type: (bytes) -> str
+    utf_8_out = ensure_str(out)
+    # The sql queries may contain any char in `UTF_8_NEWLINE_CHARS`. However,
+    # Checkmk only knows how to handle `\n`. Furthermore, `\n` is always
+    # interpreted as a record break by Checkmk (see `parse_dbs`). This means
+    # that we have to remove all newline chars, before printing the section. We
+    # solve the issue in three steps.
+    # - Make Postgres return the NULL byte (instead of newlines). This achieved
+    #   by using the flag `-0`.
+    # - Remove all newlines from whatever Postgres returns. This is safe,
+    #   because of the first step.
+    # - Finally, turn the NULL bytes into linebreaks, so Checkmk interprets
+    #   them as record breaks.
+    utf_8_out_no_new_lines = UTF_8_NEWLINE_CHARS.sub(" ", utf_8_out)
+    return utf_8_out_no_new_lines.replace("\x00", "\n").rstrip()
+
+
 class PostgresWin(PostgresBase):
     def run_sql_as_db_user(
         self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
@@ -362,7 +430,7 @@ class PostgresWin(PostgresBase):
             extra_args += " -t"
 
         if mixed_cmd:
-            cmd_str = 'cmd /c echo %s | cmd /c ""%s" -X %s -A -F"%s" -U %s"' % (
+            cmd_str = 'cmd /c echo %s | cmd /c ""%s" -X %s -A -0 -F"%s" -U %s"' % (
                 sql_cmd,
                 self.psql_binary_path,
                 extra_args,
@@ -371,21 +439,20 @@ class PostgresWin(PostgresBase):
             )
 
         else:
-            cmd_str = 'cmd /c ""%s" -X %s -A -F"%s" -U %s -c "%s"" ' % (
+            cmd_str = 'cmd /c ""%s" -X %s -A -0 -F"%s" -U %s -c "%s"" ' % (
                 self.psql_binary_path,
                 extra_args,
                 field_sep,
                 self.db_user,
                 sql_cmd,
             )
-
         proc = subprocess.Popen(  # pylint:disable=consider-using-with
             cmd_str,
             env=self.my_env,
             stdout=subprocess.PIPE,
         )
-        out = ensure_str(proc.communicate()[0])
-        return out.rstrip()
+        out = proc.communicate()[0]
+        return _sanitize_sql_query(out)
 
     @staticmethod
     def _call_wmic_logicaldisk():
@@ -465,15 +532,6 @@ class PostgresWin(PostgresBase):
         # type: () -> str
         """Gets all instances"""
 
-        procs_to_match = [
-            re.compile(pattern)
-            for pattern in [
-                r"(.*)bin\\postgres(.*)",
-                r"(.*)bin\\postmaster(.*)",
-                r"(.*)bin\\edb-postgres(.*)",
-            ]
-        ]
-
         taskslist = ensure_str(
             subprocess_check_output(
                 ["wmic", "process", "get", "processid,commandline", "/format:list"]
@@ -488,7 +546,7 @@ class PostgresWin(PostgresBase):
             cmd_line, PID = task.split("\r\r\n")
             cmd_line = cmd_line.split("CommandLine=")[1]
             PID = PID.split("ProcessId=")[1]
-            if any(pat.search(cmd_line) for pat in procs_to_match):
+            if self.is_postgres_process(cmd_line):
                 if task.find(self.name) != -1:
                     out += "%s %s\n" % (PID, cmd_line)
         return out.rstrip()
@@ -687,7 +745,7 @@ class PostgresLinux(PostgresBase):
         self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
     ):
         # type: (str, str, str, bool, bool, bool) -> str
-        base_cmd_list = ["su", "-", self.db_user, "-c", r"""PGPASSFILE=%s %s -X %s -A -F'%s'%s"""]
+        base_cmd_list = ["su", "-", self.db_user, "-c", r"""PGPASSFILE=%s %s -X %s -A0 -F'%s'%s"""]
         extra_args += " -U %s" % self.pg_user
         extra_args += " -d %s" % self.pg_database
         extra_args += " -p %s" % self.pg_port
@@ -715,7 +773,7 @@ class PostgresLinux(PostgresBase):
             receiving_pipe = subprocess.Popen(  # pylint:disable=consider-using-with
                 base_cmd_list, stdin=cmd_to_pipe.stdout, stdout=subprocess.PIPE, env=self.my_env
             )
-            out = ensure_str(receiving_pipe.communicate()[0])
+            out = receiving_pipe.communicate()[0]
 
         else:
             base_cmd_list[-1] = base_cmd_list[-1] % (
@@ -727,10 +785,10 @@ class PostgresLinux(PostgresBase):
             )
             proc = subprocess.Popen(  # pylint:disable=consider-using-with
                 base_cmd_list, env=self.my_env, stdout=subprocess.PIPE
-            )  # pylint:disable=consider-using-with
-            out = ensure_str(proc.communicate()[0])
+            )
+            out = proc.communicate()[0]
 
-        return out.rstrip()
+        return _sanitize_sql_query(out)
 
     def get_psql_binary_path(self):
         # type: () -> str
@@ -768,39 +826,23 @@ class PostgresLinux(PostgresBase):
         # type: () -> str
         return self.psql_binary_path.rsplit("/", 1)[0]
 
-    def _matches_postgres_process(self, proc, procs_to_match):
-        # type: (str, List[re.Pattern]) -> bool
-        return any(pat.search(proc) for pat in procs_to_match)
-
     def _matches_main(self, proc):
         # type: (str) -> bool
         # the data directory for the instance "main" is not called "main" but "data" on some
         # platforms
         return self.name == "main" and "data" in proc
 
-    def _filter_instances(self, procs_list, procs_to_match, proc_sensitive_filter):
-        # type: (List[str], List[re.Pattern], Callable[[str], bool]) -> List[str]
+    def _filter_instances(self, procs_list, proc_sensitive_filter):
+        # type: (List[str], Callable[[str], bool]) -> List[str]
         return [
             proc
             for proc in procs_list
-            if self._matches_postgres_process(proc, procs_to_match)
+            if self.is_postgres_process(proc)
             and (proc_sensitive_filter(proc) or self._matches_main(proc))
         ]
 
     def get_instances(self):
         # type: () -> str
-
-        procs_to_match = [
-            re.compile(pattern)
-            for pattern in [
-                "(.*)bin/postgres(.*)",
-                "(.*)bin/postmaster(.*)",
-                "(.*)bin/edb-postgres(.*)",
-                "^[0-9]+ postgres(.*)",
-                "^[0-9]+ postmaster(.*)",
-                "^[0-9]+ edb-postgres(.*)",
-            ]
-        ]
 
         procs_list = ensure_str(
             subprocess_check_output(["ps", "h", "-eo", "pid:1,command:1"])
@@ -809,14 +851,10 @@ class PostgresLinux(PostgresBase):
         # trying to address setups in SUP-12878 (instance "A01" -> process "A01") and SUP-12539
         # (instance "epcomt" -> process "EPCOMT") as well as possible future setups (containing
         # instances where the names only differ in case (e.g. "instance" and "INSTANCE"))
-        procs = self._filter_instances(
-            procs_list, procs_to_match, proc_sensitive_filter=lambda p: self.name in p
-        )
+        procs = self._filter_instances(procs_list, proc_sensitive_filter=lambda p: self.name in p)
         if not procs:
             procs = self._filter_instances(
-                procs_list,
-                procs_to_match,
-                proc_sensitive_filter=lambda p: self.name.lower() in p.lower(),
+                procs_list, proc_sensitive_filter=lambda p: self.name.lower() in p.lower()
             )
         out = "\n".join(procs)
         return out.rstrip()
@@ -830,8 +868,7 @@ class PostgresLinux(PostgresBase):
                 "SELECT datname, datid, usename, client_addr, state AS state, "
                 "COALESCE(ROUND(EXTRACT(epoch FROM now()-query_start)),0) "
                 "AS seconds, pid, "
-                "regexp_replace(query, E'[\\n\\r\\u2028]+', ' ', 'g' ) AS "
-                "current_query FROM pg_stat_activity "
+                "query AS current_query FROM pg_stat_activity "
                 "WHERE (query_start IS NOT NULL AND "
                 "(state NOT LIKE 'idle%' OR state IS NULL)) "
                 "ORDER BY query_start, pid DESC;"
@@ -842,7 +879,7 @@ class PostgresLinux(PostgresBase):
                 "SELECT datname, datid, usename, client_addr, '' AS state, "
                 "COALESCE(ROUND(EXTRACT(epoch FROM now()-query_start)),0) "
                 "AS seconds, procpid as pid, "
-                "regexp_replace(current_query, E'[\\n\\r\\u2028]+', ' ', 'g' ) "
+                "query "
                 "AS current_query FROM pg_stat_activity WHERE "
                 "(query_start IS NOT NULL AND current_query NOT LIKE '<IDLE>%') "
                 "ORDER BY query_start, procpid DESC;"
@@ -1035,9 +1072,9 @@ class PostgresLinux(PostgresBase):
 def postgres_factory(db_user, pg_instance):
     # type: (str, Dict[str, Optional[str]]) -> PostgresBase
     if IS_LINUX:
-        return PostgresLinux(db_user, pg_instance)
+        return PostgresLinux(db_user, pg_instance, LINUX_PROCESS_MATCH_PATTERNS)
     if IS_WINDOWS:
-        return PostgresWin(db_user, pg_instance)
+        return PostgresWin(db_user, pg_instance, WINDOWS_PROCESS_MATCH_PATTERNS)
     raise OSNotImplementedError
 
 
