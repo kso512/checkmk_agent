@@ -16,19 +16,10 @@ The following distributions have been tested automatically:
 
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
-- [Ubuntu 18.04 LTS "Bionic Beaver"](http://releases.ubuntu.com/bionic/)
-- [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
-
-...using the following technologies:
-
-- [Molecule playbook testing](https://github.com/geerlingguy/molecule-playbook-testing) by [@geerlingguy](https://github.com/geerlingguy)
-- [docker-systemctl-replacement](https://github.com/gdraheim/docker-systemctl-replacement) by [@gdraheim](https://github.com/gdraheim)
-
-The remaining supported operating systems are tested manually:
-
 - [Fedora 36](https://docs.fedoraproject.org/en-US/fedora/f36/release-notes/)
 - [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
+- [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
 - [Ubuntu 22.04 LTS "Jammy Jellyfish"](http://releases.ubuntu.com/jammy/)
 
 For performance reasons, the following "sections" have been disabled in the Windows agent:
@@ -55,7 +46,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.2.0                       | 1.0.58 - 1.0.60  |
+| 2.2.0                       | 1.0.58 - 1.0.61  |
 | 2.1.0p28                    | 1.0.56 - 1.0.57  |
 | 2.1.0p27                    | 1.0.55           |
 | 2.1.0p26                    | 1.0.54           |
