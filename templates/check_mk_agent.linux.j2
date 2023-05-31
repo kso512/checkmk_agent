@@ -627,7 +627,7 @@ section_nfs_mounts() {
             done
 
         echo '<<<cifsmounts>>>'
-        sed -n '/ cifs\? /s/[^ ]* \([^ ]*\) .*/\1/p' </proc/mounts |
+        sed -n -e '/ cifs /s/.*\ \([^ ]*\)\ cifs\ .*/\1/p' </proc/mounts |
             sed 's/\\040/ /g' |
             while read -r MP; do
                 if [ ! -r "${MP}" ]; then
@@ -719,9 +719,9 @@ section_tcp() {
 
 section_multipathing() {
     if inpath multipath; then
-            echo '<<<multipath>>>'
-            multipath -l
-        fi
+        echo '<<<multipath>>>'
+        multipath -l
+    fi
 }
 
 section_diskstat() {
@@ -874,20 +874,20 @@ section_megaraid() {
         return 1
     fi
 
-        echo '<<<megaraid_pdisks>>>'
-        for part in $(${MegaCli_bin} -EncInfo -aALL -NoLog </dev/null |
-            sed -rn 's/:/ /g; s/[[:space:]]+/ /g; s/^ //; s/ $//; s/Number of enclosures on adapter ([0-9]+).*/adapter \1/g; /^(Enclosure|Device ID|adapter) [0-9]+$/ p'); do
-            [ "${part}" = adapter ] && printf "\n"
-            [ "${part}" = 'Enclosure' ] && printf "\ndev2enc"
-            printf " %s" "${part}"
-        done
-        echo
-        ${MegaCli_bin} -PDList -aALL -NoLog </dev/null |
-            grep -E 'Enclosure|Raw Size|Slot Number|Device Id|Firmware state|Inquiry|Adapter|Predictive Failure Count'
-        echo '<<<megaraid_ldisks>>>'
-        ${MegaCli_bin} -LDInfo -Lall -aALL -NoLog </dev/null | grep -E 'Size|State|Number|Adapter|Virtual'
-        echo '<<<megaraid_bbu>>>'
-        ${MegaCli_bin} -AdpBbuCmd -GetBbuStatus -aALL -NoLog </dev/null | grep -v Exit
+    echo '<<<megaraid_pdisks>>>'
+    for part in $(${MegaCli_bin} -EncInfo -aALL -NoLog </dev/null |
+        sed -rn 's/:/ /g; s/[[:space:]]+/ /g; s/^ //; s/ $//; s/Number of enclosures on adapter ([0-9]+).*/adapter \1/g; /^(Enclosure|Device ID|adapter) [0-9]+$/ p'); do
+        [ "${part}" = adapter ] && printf "\n"
+        [ "${part}" = 'Enclosure' ] && printf "\ndev2enc"
+        printf " %s" "${part}"
+    done
+    echo
+    ${MegaCli_bin} -PDList -aALL -NoLog </dev/null |
+        grep -E 'Enclosure|Raw Size|Slot Number|Device Id|Firmware state|Inquiry|Adapter|Predictive Failure Count'
+    echo '<<<megaraid_ldisks>>>'
+    ${MegaCli_bin} -LDInfo -Lall -aALL -NoLog </dev/null | grep -E 'Size|State|Number|Adapter|Virtual'
+    echo '<<<megaraid_bbu>>>'
+    ${MegaCli_bin} -AdpBbuCmd -GetBbuStatus -aALL -NoLog </dev/null | grep -v Exit
 }
 
 section_3ware_raid() {
@@ -1449,7 +1449,7 @@ section_timesyncd() {
     if [ -f "/run/systemd/timesync/synchronized" ]; then
         get_file_mtime /run/systemd/timesync/synchronized | awk '{print "[[["$1"]]]"}'
     else
-    get_file_mtime /var/lib/systemd/timesync/clock | awk '{print "[[["$1"]]]"}'
+        get_file_mtime /var/lib/systemd/timesync/clock | awk '{print "[[["$1"]]]"}'
     fi
 
     echo "<<<timesyncd_ntpmessage:sep(10)>>>"

@@ -39,9 +39,9 @@ if sys.version_info < (2, 6):
 
 def urlopen_(request, timeout=5, cafile=None, context=None):
     if sys.version_info[0] == 2:
-            scheme = request.get_type()
+        scheme = request.get_type()
     else:
-            scheme = request.type
+        scheme = request.type
     if scheme not in ["http", "https"]:
         raise ValueError("Scheme '%s' is not allowed" % scheme)
     return urlopen(  # nosec B310 # BNS:6b61d9

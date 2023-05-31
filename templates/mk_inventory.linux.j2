@@ -174,22 +174,22 @@ section_lnx_cpuinfo() {
     # CPU Information. We need just the first one
     [ -e /proc/cpuinfo ] || return
     echo "<<<lnx_cpuinfo:sep(58)>>>"
-        sed 's/[[:space:]]*:[[:space:]]*/:/' </proc/cpuinfo
+    sed 's/[[:space:]]*:[[:space:]]*/:/' </proc/cpuinfo
 }
 
 section_dmidecode() {
     # Information about main board, memory, etc.
     inpath dmidecode || return
     echo "<<<dmidecode:sep(58)>>>"
-        dmidecode -q | sed 's/\t/:/g'
+    dmidecode -q | sed 's/\t/:/g'
 }
 
 section_lnx_uname() {
     # Information about kernel architecture
     inpath uname || return
     echo "<<<lnx_uname>>>"
-        uname -m
-        uname -r
+    uname -m
+    uname -r
 }
 
 section_lnx_video() {
@@ -197,22 +197,22 @@ section_lnx_video() {
     vgas="$(lspci | grep VGA | cut -d" " -f 1)"
     [ -n "$vgas" ] || return
     echo "<<<lnx_video:sep(58)>>>"
-        lspci -v -s "$vgas"
+    lspci -v -s "$vgas"
 }
 
 section_lnx_ip_r() {
     # Some networking information
     inpath ip || return
     echo "<<<lnx_ip_r>>>"
-        ip r
-        ip -6 r
+    ip r
+    ip -6 r
 }
 
 section_lnx_sysctl() {
     # Kernel configuration
     inpath sysctl || return
     echo "<<<lnx_sysctl>>>"
-        sysctl -ae
+    sysctl -ae
 }
 
 section_lnx_block_devices() {
