@@ -5,6 +5,17 @@
     name: "{{ checkmk_agent_prereqs }}"
     state: present
     update_cache: yes
+  when:
+    - ansible_pkg_mgr == "dnf"
+  tags:
+    - checkmk-agent
+- name: Install pre-requisites | YUM
+  ansible.builtin.yum:
+    name: "{{ checkmk_agent_prereqs_yum }}"
+    state: present
+    update_cache: yes
+  when:
+    - ansible_pkg_mgr == "yum"
   tags:
     - checkmk-agent
 - name: Create monitoring group | GROUP
@@ -37,6 +48,8 @@
     mode: "{{ checkmk_agent_docker_mode }}"
     src: "{{ checkmk_agent_docker_src }}"
     dest: "{{ checkmk_agent_docker_dest }}"
+  when:
+    - ansible_distribution_major_version != "7"
   tags:
     - checkmk-agent
 - name: Grant sudo for check_mk_agent to monitoring user | TEMPLATE
@@ -71,7 +84,8 @@
   ansible.builtin.file:
     path: "{{ checkmk_agent_local_path }}"
     state: absent
-  when: checkmk_agent_local_purge
+  when:
+    - checkmk_agent_local_purge
   tags:
     - checkmk-agent
 - name: Create directory - local | FILE
@@ -90,7 +104,8 @@
     mode: "{{ checkmk_agent_local_mode }}"
     src: "{{ item }}.j2"
     dest: "{{ checkmk_agent_local_path }}/{{ item }}"
-  with_items: "{{ checkmk_agent_local_checks }}"
+  with_items:
+    - "{{ checkmk_agent_local_checks }}"
   tags:
     - checkmk-agent
 - name: Create directory - local/async | FILE
@@ -101,7 +116,8 @@
     path: "{{ checkmk_agent_local_path }}/{{ item.0.key }}"
     state: directory
   loop: "{{ checkmk_agent_local_checks_async | dict2items | subelements('value') }}"
-  when: item.1 | length > 0
+  when:
+    - item.1 | length > 0
   tags:
     - checkmk-agent
 - name: Generate local/async checks | TEMPLATE
@@ -112,14 +128,16 @@
     src: "{{ item.1 }}.j2"
     dest: "{{ checkmk_agent_local_path }}/{{ item.0.key }}/{{ item.1 }}"
   loop: "{{ checkmk_agent_local_checks_async | dict2items | subelements('value') }}"
-  when: item.1 | length > 0
+  when:
+    - item.1 | length > 0
   tags:
     - checkmk-agent
 - name: Delete directory - plugins | FILE
   ansible.builtin.file:
     path: "{{ checkmk_agent_plugin_path }}"
     state: absent
-  when: checkmk_agent_plugin_purge
+  when:
+    - checkmk_agent_plugin_purge
   tags:
     - checkmk-agent
 - name: Create directory - plugins | FILE
@@ -138,7 +156,8 @@
     mode: "{{ checkmk_agent_plugin_mode }}"
     src: "{{ item }}.j2"
     dest: "{{ checkmk_agent_plugin_path }}/{{ item }}"
-  with_items: "{{ checkmk_agent_plugin_checks }}"
+  with_items:
+    - "{{ checkmk_agent_plugin_checks }}"
   tags:
     - checkmk-agent
 - name: Create directory - plugins/async | FILE
@@ -149,7 +168,9 @@
     path: "{{ checkmk_agent_plugin_path }}/{{ item.0.key }}"
     state: directory
   loop: "{{ checkmk_agent_plugin_checks_async | dict2items | subelements('value') }}"
-  when: item.1 | length > 0
+  when:
+    - item.1 | length > 0
+    - ansible_distribution_major_version != "7"
   tags:
     - checkmk-agent
 - name: Generate plugins/async | TEMPLATE
@@ -160,7 +181,9 @@
     src: "{{ item.1 }}.j2"
     dest: "{{ checkmk_agent_plugin_path }}/{{ item.0.key }}/{{ item.1 }}"
   loop: "{{ checkmk_agent_plugin_checks_async | dict2items | subelements('value') }}"
-  when: item.1 | length > 0
+  when:
+    - item.1 | length > 0
+    - ansible_distribution_major_version != "7"
   tags:
     - checkmk-agent
 - name: Create directory - spool | FILE
@@ -182,4 +205,3 @@
   tags:
     - checkmk-agent
 ...
-    

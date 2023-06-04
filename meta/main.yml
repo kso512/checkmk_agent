@@ -12,6 +12,9 @@ galaxy_info:
       versions:
         - bullseye
         - buster
+    - name: EL
+      versions:
+        - "7"
     - name: Fedora
       versions:
         - "37"

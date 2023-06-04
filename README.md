@@ -14,6 +14,7 @@ All tasks are tagged with `checkmk-agent`.
 
 The following distributions have been tested automatically:
 
+- [CentOS 7](https://wiki.centos.org/action/show/Manuals/ReleaseNotes/CentOS7.2009)
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
 - [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
@@ -46,7 +47,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.2.0p1                     | 1.0.62           |
+| 2.2.0p1                     | 1.0.62 - 1.0.63  |
 | 2.2.0                       | 1.0.58 - 1.0.61  |
 | 2.1.0p28                    | 1.0.56 - 1.0.57  |
 | 2.1.0p27                    | 1.0.55           |
@@ -138,6 +139,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_plugin_purge | Delete "plugin" folder before sync | `false` |
 | checkmk_agent_plugin_user | Name of the user that should own the "plugin" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_prereqs | List of packages needed for a successful installation | `"python3-docker"` `"sudo"` |
+| checkmk_agent_prereqs_yum | List of packages needed for a successful installation with systems using YUM as their package manager | `"sudo"` |
 | checkmk_agent_src | Filename of the CheckMK Agent executable file template | `"check_mk_agent.linux.j2"` |
 | checkmk_agent_ssh_group | Name of the group that should own the ".ssh" folder and files | `"{{ checkmk_agent_group }}"` |
 | checkmk_agent_ssh_mode | File mode settings of the ".ssh" folder and files | `"0700"` |
