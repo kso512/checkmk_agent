@@ -15,6 +15,7 @@ All tasks are tagged with `checkmk-agent`.
 The following distributions have been tested automatically:
 
 - [CentOS 7](https://wiki.centos.org/action/show/Manuals/ReleaseNotes/CentOS7.2009)
+- [CentOS 8](https://wiki.centos.org/Manuals/ReleaseNotes/CentOSStream)
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
 - [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)

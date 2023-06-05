@@ -1,6 +1,18 @@
 ---
 # tasks file for checkmk_agent
+- name: Load a variable file based on the OS type, or a default if not found. Using free-form to specify the file | INCLUDE_VARS
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}.yml"
+        - default.yml
+      paths:
+        - 'vars'
+  tags:
+    - checkmk-agent
 - name: Include OS-specific tasks | INCLUDE_TASKS
   ansible.builtin.include_tasks: "{{ ansible_os_family }}-tasks.yml"
-  tags: checkmk-agent
+  tags:
+    - checkmk-agent
 ...

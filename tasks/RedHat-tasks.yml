@@ -11,7 +11,7 @@
     - checkmk-agent
 - name: Install pre-requisites | YUM
   ansible.builtin.yum:
-    name: "{{ checkmk_agent_prereqs_yum }}"
+    name: "{{ checkmk_agent_prereqs }}"
     state: present
     update_cache: yes
   when:
@@ -49,7 +49,7 @@
     src: "{{ checkmk_agent_docker_src }}"
     dest: "{{ checkmk_agent_docker_dest }}"
   when:
-    - ansible_distribution_major_version != "7"
+    - ansible_distribution != "CentOS"
   tags:
     - checkmk-agent
 - name: Grant sudo for check_mk_agent to monitoring user | TEMPLATE
@@ -170,7 +170,7 @@
   loop: "{{ checkmk_agent_plugin_checks_async | dict2items | subelements('value') }}"
   when:
     - item.1 | length > 0
-    - ansible_distribution_major_version != "7"
+    - ansible_distribution != "CentOS"
   tags:
     - checkmk-agent
 - name: Generate plugins/async | TEMPLATE
@@ -183,7 +183,7 @@
   loop: "{{ checkmk_agent_plugin_checks_async | dict2items | subelements('value') }}"
   when:
     - item.1 | length > 0
-    - ansible_distribution_major_version != "7"
+    - ansible_distribution != "CentOS"
   tags:
     - checkmk-agent
 - name: Create directory - spool | FILE

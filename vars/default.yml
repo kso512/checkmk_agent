@@ -1,0 +1,6 @@
+---
+# default variables for checkmk_agent
+checkmk_agent_prereqs:
+  - "python3-docker"
+  - "sudo"
+...
