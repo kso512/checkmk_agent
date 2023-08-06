@@ -18,6 +18,7 @@ The following distributions have been tested automatically:
 - [CentOS 8](https://wiki.centos.org/Manuals/ReleaseNotes/CentOSStream)
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
+- [Debian 12 "Bookworm"](https://www.debian.org/releases/bookworm/)
 - [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Fedora 38](https://docs.fedoraproject.org/en-US/fedora/f38/release-notes/)
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
@@ -48,7 +49,7 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.2.0p7                     | 1.0.69           |
+| 2.2.0p7                     | 1.0.69 - 1.0.70  |
 | 2.2.0p6                     | 1.0.68           |
 | 2.2.0p5                     | 1.0.67           |
 | 2.2.0p4                     | 1.0.66           |
