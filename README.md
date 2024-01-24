@@ -21,11 +21,12 @@ The following distributions have been tested automatically:
 - [Debian 12 "Bookworm"](https://www.debian.org/releases/bookworm/)
 - [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Fedora 38](https://docs.fedoraproject.org/en-US/fedora/f38/release-notes/)
+- [Fedora 39](https://docs.fedoraproject.org/en-US/fedora/f39/release-notes/)
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
 - [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
 - [Ubuntu 22.04 LTS "Jammy Jellyfish"](http://releases.ubuntu.com/jammy/)
 
-For performance reasons, the following "sections" have been disabled in the Windows agent:
+For performance reasons, the following "sections" have been disabled by default in the Windows agent:
 
 - services
 - msexch
@@ -49,11 +50,11 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.2.0p20                    | 1.0.82           |
 | 2.2.0p19                    | 1.0.81           |
 | 2.2.0p18                    | 1.0.80           |
 | 2.2.0p17                    | 1.0.79           |
 | 2.2.0p16                    | 1.0.78           |
-| 2.2.0p15                    | 1.0.77           |
 
 ## Requirements
 
@@ -158,7 +159,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `"99_cmkagent.j2"` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `"cmkagent"` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `"2.2.0p19"` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `"2.2.0p20"` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `"check_mk.user.yml.j2"` |
 | checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `"C:\\ProgramData\\checkmk\\agent\\"` |
