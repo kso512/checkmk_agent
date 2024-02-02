@@ -6,6 +6,7 @@
     src: "{{ checkmk_agent_win_install_src }}"
   tags:
     - checkmk-agent
+
 - name: Install agent | WIN_PACKAGE
   ansible.windows.win_package:
     path: "{{ checkmk_agent_win_install_dest }}"
@@ -14,6 +15,7 @@
   notify: Restart Windows agent service | WIN_SERVICE
   tags:
     - checkmk-agent
+
 - name: Generate configuration file from template | WIN_TEMPLATE
   ansible.windows.win_template:
     src: "{{ checkmk_agent_win_config_src }}"
@@ -21,6 +23,7 @@
   notify: Restart Windows agent service | WIN_SERVICE
   tags:
     - checkmk-agent
+
 - name: Generate plugins | WIN_TEMPLATE
   ansible.windows.win_template:
     src: "{{ item }}.j2"
@@ -29,4 +32,5 @@
   notify: Restart Windows agent service | WIN_SERVICE
   tags:
     - checkmk-agent
+
 ...

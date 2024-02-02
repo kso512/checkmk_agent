@@ -50,11 +50,11 @@ Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_sr
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.2.0p21                    | 1.0.83           |
 | 2.2.0p20                    | 1.0.82           |
 | 2.2.0p19                    | 1.0.81           |
 | 2.2.0p18                    | 1.0.80           |
 | 2.2.0p17                    | 1.0.79           |
-| 2.2.0p16                    | 1.0.78           |
 
 ## Requirements
 
@@ -107,26 +107,26 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_authkey_dest | Full pathname of "authorized_keys" file | `"{{ checkmk_agent_ssh_path }}/authorized_keys"` |
 | checkmk_agent_authkey_group | Name of the group that should own the "authorized_keys" file | `"{{ checkmk_agent_ssh_group }}"` |
 | checkmk_agent_authkey_mode | File mode settings of the "authorized_keys" file | `"0600"` |
-| checkmk_agent_authkey_src | Filename of the "authorized_keys" template | `"authorized_keys.j2"` |
+| checkmk_agent_authkey_src | Filename of the "authorized_keys" template | `authorized_keys.j2` |
 | checkmk_agent_authkey_user | Name of the user that should own the "authorized_keys" file | `"{{ checkmk_agent_ssh_user }}"` |
 | checkmk_agent_cache_group | Name of the group that should own the "cache" folder and files | `"{{ checkmk_agent_cache_user }}"` |
 | checkmk_agent_cache_mode | File mode settings of the "cache" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_cache_path | Full pathname of "cache" folder | `"{{ checkmk_agent_home }}/cache"` |
 | checkmk_agent_cache_user | Name of the user that should own the "cache" folder and files | `"{{ checkmk_agent_user }}"` |
-| checkmk_agent_comment | Full name of the CheckMK Agent user | `"CheckMK Agent"` |
-| checkmk_agent_count_users_crit | Logged in users, critical threshold | `"15"` |
-| checkmk_agent_count_users_warn | Logged in users, warning threshold | `"10"` |
-| checkmk_agent_count_zombie_procs_crit | Zombie processes, critical threshold | `"10"` |
-| checkmk_agent_count_zombie_procs_warn | Zombie processes, warning threshold | `"5"` |
+| checkmk_agent_comment | Full name of the CheckMK Agent user | `CheckMK Agent` |
+| checkmk_agent_count_users_crit | Logged in users, critical threshold | `15` |
+| checkmk_agent_count_users_warn | Logged in users, warning threshold | `10` |
+| checkmk_agent_count_zombie_procs_crit | Zombie processes, critical threshold | `10` |
+| checkmk_agent_count_zombie_procs_warn | Zombie processes, warning threshold | `5` |
 | checkmk_agent_dest | Full pathname of the CheckMK Agent executable file | `"{{ checkmk_agent_home }}/check_mk_agent"` |
 | checkmk_agent_docker_dest | Full pathname of the Docker configuration file | `"{{ checkmk_agent_home }}/docker.cfg"` |
 | checkmk_agent_docker_group | Name of the group that should own the Docker configuration file | `"{{ checkmk_agent_group }}"` |
 | checkmk_agent_docker_mode | File mode settings of the Docker configuration file | `"0644"` |
-| checkmk_agent_docker_src | Filename of the Docker configuration file template | `"docker.cfg.j2"` |
+| checkmk_agent_docker_src | Filename of the Docker configuration file template | `docker.cfg.j2` |
 | checkmk_agent_docker_user | Filename of the Docker configuration file template | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_group | Name of the group that should own the CheckMK Agent executable file | `"{{ checkmk_agent_user }}"` |
-| checkmk_agent_home | Full pathname of the CheckMK Agent user home folder | `"/home/{{ checkmk_agent_user }}"` |
-| checkmk_agent_local_checks | List of checks to copy to the "local" folder | `"count_users"` `"count_zombie_procs"` |
+| checkmk_agent_home | Full pathname of the CheckMK Agent user home folder | `/home/{{ checkmk_agent_user }}` |
+| checkmk_agent_local_checks | List of checks to copy to the "local" folder | `count_users` `count_zombie_procs` |
 | checkmk_agent_local_checks_async | List of checks to copy to the "local" async folders | (See [NOTE A](https://github.com/kso512/checkmk_agent#note-a) below) |
 | checkmk_agent_local_group | Name of the group that should own the "local" folder and files | `"{{ checkmk_agent_local_user }}"` |
 | checkmk_agent_local_mode | File mode settings of the "local" folder and files | `"{{ checkmk_agent_mode }}"` |
@@ -134,16 +134,16 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_local_purge | Delete "local" folder before sync | `false` |
 | checkmk_agent_local_user | Name of the user that should own the "local" folder and files | `"{{ checkmk_agent_user }}"` |
 | checkmk_agent_mode | File mode settings of the CheckMK Agent executable file | `"0755"` |
-| checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `"hpsa"` `"lvm"` `"mk_inventory.linux"` `"mk_iptables"` `"mk_nfsiostat"` `"mk_sshd_config"` `"netstat.linux"` `"nfsexports"` `"smart"` |
+| checkmk_agent_plugin_checks | List of checks to copy to the "plugin" folder | `hpsa` `lvm` `mk_inventory.linux` `mk_iptables` `mk_nfsiostat` `mk_sshd_config` `netstat.linux` `nfsexports` `smart` |
 | checkmk_agent_plugin_checks_async | List of checks to copy to the "plugin" async folders | (See [NOTE A](https://github.com/kso512/checkmk_agent#note-a) below) |
 | checkmk_agent_plugin_group | Name of the group that should own the "plugin" folder and files | `"{{ checkmk_agent_plugin_user }}"` |
 | checkmk_agent_plugin_mode | File mode settings of the "plugin" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_plugin_path | Full pathname of "plugin" folder | `"{{ checkmk_agent_home }}/plugins"` |
 | checkmk_agent_plugin_purge | Delete "plugin" folder before sync | `false` |
 | checkmk_agent_plugin_user | Name of the user that should own the "plugin" folder and files | `"{{ checkmk_agent_user }}"` |
-| checkmk_agent_prereqs | List of packages needed for a successful installation | `"python3-docker"` `"sudo"` |
-| checkmk_agent_prereqs_yum | List of packages needed for a successful installation with systems using YUM as their package manager | `"sudo"` |
-| checkmk_agent_src | Filename of the CheckMK Agent executable file template | `"check_mk_agent.linux.j2"` |
+| checkmk_agent_prereqs | List of packages needed for a successful installation | `python3-docker` `sudo` |
+| checkmk_agent_prereqs_yum | List of packages needed for a successful installation with systems using YUM as their package manager | `sudo` |
+| checkmk_agent_src | Filename of the CheckMK Agent executable file template | `check_mk_agent.linux.j2` |
 | checkmk_agent_ssh_group | Name of the group that should own the ".ssh" folder and files | `"{{ checkmk_agent_group }}"` |
 | checkmk_agent_ssh_mode | File mode settings of the ".ssh" folder and files | `"0700"` |
 | checkmk_agent_ssh_path | Full pathname of ".ssh" folder | `"{{ checkmk_agent_home }}/.ssh"` |
@@ -152,20 +152,20 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_spool_mode | File mode settings of the "spool" folder and files | `"{{ checkmk_agent_mode }}"` |
 | checkmk_agent_spool_path | Full pathname of "spool" folder | `"{{ checkmk_agent_home }}/spool"` |
 | checkmk_agent_spool_user | Name of the user that should own the "spool" folder and files | `"{{ checkmk_agent_user }}"` |
-| checkmk_agent_sudo_dest | Full pathname of "sudoers.d" file, used to grant the CheckMK Agent user sudo access to the CheckMK Agent executable file | `"/etc/sudoers.d/99_cmkagent"` |
+| checkmk_agent_sudo_dest | Full pathname of "sudoers.d" file, used to grant the CheckMK Agent user sudo access to the CheckMK Agent executable file | `/etc/sudoers.d/99_cmkagent` |
 | checkmk_agent_sudo_group | Name of the group that should own the "sudoers.d" file | `"{{ checkmk_agent_sudo_owner }}"` |
 | checkmk_agent_sudo_mode | File mode settings of the "sudoers.d" file | `"0440"` |
-| checkmk_agent_sudo_owner | Name of the user that should own the "sudoers.d" file | `"root"` |
-| checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `"99_cmkagent.j2"` |
+| checkmk_agent_sudo_owner | Name of the user that should own the "sudoers.d" file | `root` |
+| checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `99_cmkagent.j2` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
-| checkmk_agent_user | Login name of the CheckMK Agent user | `"cmkagent"` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `"2.2.0p20"` |
+| checkmk_agent_user | Login name of the CheckMK Agent user | `cmkagent` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `2.2.0p21` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
-| checkmk_agent_win_config_src | Filename of the configuration file template | `"check_mk.user.yml.j2"` |
-| checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `"C:\\ProgramData\\checkmk\\agent\\"` |
-| checkmk_agent_win_install_dest | Full pathname of the CheckMK Agent installation file | `"c:\\Users\\{{ ansible_user }}\\Downloads\\{{ checkmk_agent_win_install_src }}"` |
-| checkmk_agent_win_install_src | Short file name of the CheckMK Agent installation file | `"check_mk_agent.msi"` |
-| checkmk_agent_win_plugins | List of Windows plugins to copy to the "plugin" folder" | `"mk_inventory.vbs"` `"windows_updates.vbs"` |
+| checkmk_agent_win_config_src | Filename of the configuration file template | `check_mk.user.yml.j2` |
+| checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `C:\\ProgramData\\checkmk\\agent\\` |
+| checkmk_agent_win_install_dest | Full pathname of the CheckMK Agent installation file | `c:\\Users\\{{ ansible_user }}\\Downloads\\{{ checkmk_agent_win_install_src }}` |
+| checkmk_agent_win_install_src | Short file name of the CheckMK Agent installation file | `check_mk_agent.msi` |
+| checkmk_agent_win_plugins | List of Windows plugins to copy to the "plugin" folder" | `mk_inventory.vbs` `windows_updates.vbs` |
 | checkmk_agent_win_productid | Version-specific "Product ID" to install | `"{B6212139-D124-4782-8F81-05D08203092D}"` |
 
 ### NOTE A
@@ -177,7 +177,7 @@ Some of these may be seem redundant but are specified so future users can overri
 The format of these lists is as follows, with `checkmk_agent_plugin_checks_async` shown:
 
     300:
-      - "apache_status.py"
+      - apache_status.py
     600:
       - ""
     900:
@@ -185,8 +185,8 @@ The format of these lists is as follows, with `checkmk_agent_plugin_checks_async
     1800:
       - ""
     86400:
-      - "mk_apt"
-      - "mk_docker.py"
+      - mk_apt
+      - mk_docker.py
 
 This runs the `apache_status.py` plugin only once per five minutes, and the `mk_apt` and `mk_docker.py` plugins only once per day, instead of every check. This shaves seconds off every remaining check of the day which uses the cached value.
 

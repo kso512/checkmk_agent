@@ -3,28 +3,28 @@
 checkmk_agent_authkey_dest: "{{ checkmk_agent_ssh_path }}/authorized_keys"
 checkmk_agent_authkey_group: "{{ checkmk_agent_ssh_group }}"
 checkmk_agent_authkey_mode: "0600"
-checkmk_agent_authkey_src: "authorized_keys.j2"
+checkmk_agent_authkey_src: authorized_keys.j2
 checkmk_agent_authkey_user: "{{ checkmk_agent_ssh_user }}"
 checkmk_agent_cache_group: "{{ checkmk_agent_cache_user }}"
 checkmk_agent_cache_mode: "{{ checkmk_agent_mode }}"
 checkmk_agent_cache_path: "{{ checkmk_agent_home }}/cache"
 checkmk_agent_cache_user: "{{ checkmk_agent_user }}"
-checkmk_agent_comment: "CheckMK Agent"
-checkmk_agent_count_users_crit: "15"
-checkmk_agent_count_users_warn: "10"
-checkmk_agent_count_zombie_procs_crit: "10"
-checkmk_agent_count_zombie_procs_warn: "5"
+checkmk_agent_comment: CheckMK Agent
+checkmk_agent_count_users_crit: 15
+checkmk_agent_count_users_warn: 10
+checkmk_agent_count_zombie_procs_crit: 10
+checkmk_agent_count_zombie_procs_warn: 5
 checkmk_agent_dest: "{{ checkmk_agent_home }}/check_mk_agent"
 checkmk_agent_docker_dest: "{{ checkmk_agent_home }}/docker.cfg"
 checkmk_agent_docker_group: "{{ checkmk_agent_group }}"
 checkmk_agent_docker_mode: "0644"
-checkmk_agent_docker_src: "docker.cfg.j2"
+checkmk_agent_docker_src: docker.cfg.j2
 checkmk_agent_docker_user: "{{ checkmk_agent_user }}"
 checkmk_agent_group: "{{ checkmk_agent_user }}"
-checkmk_agent_home: "/home/{{ checkmk_agent_user }}"
+checkmk_agent_home: /home/{{ checkmk_agent_user }}
 checkmk_agent_local_checks:
-  - "count_users"
-  - "count_zombie_procs"
+  - count_users
+  - count_zombie_procs
 checkmk_agent_local_checks_async:
   300:
     - ""
@@ -43,18 +43,18 @@ checkmk_agent_local_purge: false
 checkmk_agent_local_user: "{{ checkmk_agent_user }}"
 checkmk_agent_mode: "0755"
 checkmk_agent_plugin_checks:
-  - "hpsa"
-  - "lvm"
-  - "mk_inventory.linux"
-  - "mk_iptables"
-  - "mk_nfsiostat"
-  - "mk_sshd_config"
-  - "netstat.linux"
-  - "nfsexports"
-  - "smart"
+  - hpsa
+  - lvm
+  - mk_inventory.linux
+  - mk_iptables
+  - mk_nfsiostat
+  - mk_sshd_config
+  - netstat.linux
+  - nfsexports
+  - smart
 checkmk_agent_plugin_checks_async:
   300:
-    - "apache_status.py"
+    - apache_status.py
   600:
     - ""
   900:
@@ -62,17 +62,17 @@ checkmk_agent_plugin_checks_async:
   1800:
     - ""
   86400:
-    - "mk_apt"
-    - "mk_docker.py"
+    - mk_apt
+    - mk_docker.py
 checkmk_agent_plugin_group: "{{ checkmk_agent_plugin_user }}"
 checkmk_agent_plugin_mode: "{{ checkmk_agent_mode }}"
 checkmk_agent_plugin_path: "{{ checkmk_agent_home }}/plugins"
 checkmk_agent_plugin_purge: false
 checkmk_agent_plugin_user: "{{ checkmk_agent_user }}"
 checkmk_agent_prereqs:
-  - "python3-docker"
-  - "sudo"
-checkmk_agent_src: "check_mk_agent.linux.j2"
+  - python3-docker
+  - sudo
+checkmk_agent_src: check_mk_agent.linux.j2
 checkmk_agent_ssh_group: "{{ checkmk_agent_group }}"
 checkmk_agent_ssh_mode: "0700"
 checkmk_agent_ssh_path: "{{ checkmk_agent_home }}/.ssh"
@@ -81,21 +81,21 @@ checkmk_agent_spool_group: "{{ checkmk_agent_spool_user }}"
 checkmk_agent_spool_mode: "{{ checkmk_agent_mode }}"
 checkmk_agent_spool_path: "{{ checkmk_agent_home }}/spool"
 checkmk_agent_spool_user: "{{ checkmk_agent_user }}"
-checkmk_agent_sudo_dest: "/etc/sudoers.d/99_cmkagent"
+checkmk_agent_sudo_dest: /etc/sudoers.d/99_cmkagent
 checkmk_agent_sudo_group: "{{ checkmk_agent_sudo_owner }}"
 checkmk_agent_sudo_mode: "0440"
-checkmk_agent_sudo_owner: "root"
-checkmk_agent_sudo_src: "99_cmkagent.j2"
+checkmk_agent_sudo_owner: root
+checkmk_agent_sudo_src: 99_cmkagent.j2
 checkmk_agent_sudo_validate: 'visudo -cf %s'
-checkmk_agent_user: "cmkagent"
-checkmk_agent_version: "2.2.0p20"
+checkmk_agent_user: cmkagent
+checkmk_agent_version: 2.2.0p21
 checkmk_agent_win_config_dest: "{{ checkmk_agent_win_data_folder }}check_mk.user.yml"
-checkmk_agent_win_config_src: "check_mk.user.yml.j2"
-checkmk_agent_win_data_folder: "C:\\ProgramData\\checkmk\\agent\\"
-checkmk_agent_win_install_dest: "c:\\Users\\{{ ansible_user }}\\Downloads\\{{ checkmk_agent_win_install_src }}"
-checkmk_agent_win_install_src: "check_mk_agent.msi"
+checkmk_agent_win_config_src: check_mk.user.yml.j2
+checkmk_agent_win_data_folder: C:\\ProgramData\\checkmk\\agent\\
+checkmk_agent_win_install_dest: C:\\Users\\{{ ansible_user }}\\Downloads\\{{ checkmk_agent_win_install_src }}
+checkmk_agent_win_install_src: check_mk_agent.msi
 checkmk_agent_win_plugins:
-  - "mk_inventory.vbs"
-  - "windows_updates.vbs"
+  - mk_inventory.vbs
+  - windows_updates.vbs
 checkmk_agent_win_productid: "{B6212139-D124-4782-8F81-05D08203092D}"
 ...

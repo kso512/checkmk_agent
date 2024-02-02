@@ -7,12 +7,14 @@
     update_cache: yes
   tags:
     - checkmk-agent
+
 - name: Create monitoring group | GROUP
   ansible.builtin.group:
     name: "{{ checkmk_agent_group }}"
     state: present
   tags:
     - checkmk-agent
+
 - name: Create monitoring user | USER
   ansible.builtin.user:
     name: "{{ checkmk_agent_user }}"
@@ -21,6 +23,7 @@
     comment: "{{ checkmk_agent_comment }}"
   tags:
     - checkmk-agent
+
 - name: Copy Linux check_mk_agent and set executable | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_user }}"
@@ -30,6 +33,7 @@
     dest: "{{ checkmk_agent_dest }}"
   tags:
     - checkmk-agent
+
 - name: Copy Docker configuration file | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_docker_user }}"
@@ -39,6 +43,7 @@
     dest: "{{ checkmk_agent_docker_dest }}"
   tags:
     - checkmk-agent
+
 - name: Grant sudo for check_mk_agent to monitoring user | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_sudo_owner }}"
@@ -49,6 +54,7 @@
     validate: "{{ checkmk_agent_sudo_validate }}"
   tags:
     - checkmk-agent
+
 - name: Create directory - .ssh | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_ssh_user }}"
@@ -58,6 +64,7 @@
     state: directory
   tags:
     - checkmk-agent
+
 - name: Copy public key to .ssh/authorized_keys | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_authkey_user }}"
@@ -67,6 +74,7 @@
     dest: "{{ checkmk_agent_authkey_dest }}"
   tags:
     - checkmk-agent
+
 - name: Delete directory - local | FILE
   ansible.builtin.file:
     path: "{{ checkmk_agent_local_path }}"
@@ -74,6 +82,7 @@
   when: checkmk_agent_local_purge
   tags:
     - checkmk-agent
+
 - name: Create directory - local | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_local_user }}"
@@ -83,6 +92,7 @@
     state: directory
   tags:
     - checkmk-agent
+
 - name: Generate local checks | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_local_user }}"
@@ -93,6 +103,7 @@
   with_items: "{{ checkmk_agent_local_checks }}"
   tags:
     - checkmk-agent
+
 - name: Create directory - local/async | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_local_user }}"
@@ -104,6 +115,7 @@
   when: item.1 | length > 0
   tags:
     - checkmk-agent
+
 - name: Generate local/async checks | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_local_user }}"
@@ -115,6 +127,7 @@
   when: item.1 | length > 0
   tags:
     - checkmk-agent
+
 - name: Delete directory - plugins | FILE
   ansible.builtin.file:
     path: "{{ checkmk_agent_plugin_path }}"
@@ -122,6 +135,7 @@
   when: checkmk_agent_plugin_purge
   tags:
     - checkmk-agent
+
 - name: Create directory - plugins | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_plugin_user }}"
@@ -131,6 +145,7 @@
     state: directory
   tags:
     - checkmk-agent
+
 - name: Generate plugins | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_plugin_user }}"
@@ -141,6 +156,7 @@
   with_items: "{{ checkmk_agent_plugin_checks }}"
   tags:
     - checkmk-agent
+
 - name: Create directory - plugins/async | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_plugin_user }}"
@@ -152,6 +168,7 @@
   when: item.1 | length > 0
   tags:
     - checkmk-agent
+
 - name: Generate plugins/async | TEMPLATE
   ansible.builtin.template:
     owner: "{{ checkmk_agent_plugin_user }}"
@@ -163,6 +180,7 @@
   when: item.1 | length > 0
   tags:
     - checkmk-agent
+
 - name: Create directory - spool | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_spool_user }}"
@@ -172,6 +190,7 @@
     state: directory
   tags:
     - checkmk-agent
+
 - name: Create directory - cache | FILE
   ansible.builtin.file:
     owner: "{{ checkmk_agent_cache_user }}"
@@ -181,4 +200,5 @@
     state: directory
   tags:
     - checkmk-agent
+
 ...

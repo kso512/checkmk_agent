@@ -1,5 +1,5 @@
 ---
 # CentOS variables for checkmk_agent
 checkmk_agent_prereqs:
-  - "sudo"
+  - sudo
 ...

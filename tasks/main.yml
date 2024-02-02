@@ -11,6 +11,7 @@
         - 'vars'
   tags:
     - checkmk-agent
+
 - name: Include OS-specific tasks | INCLUDE_TASKS
   ansible.builtin.include_tasks: "{{ ansible_os_family }}-tasks.yml"
   tags:
