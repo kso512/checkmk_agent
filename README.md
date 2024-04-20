@@ -44,17 +44,19 @@ In addition, the execution of plugins have been adjusted:
 - Async enabled
 - Cache_age set to `3600` (1 hour)
 
-Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_src` to adjust.
+Create your own "check_mk.user.yml.j2" and override `checkmk_agent_win_config_src` to customize further, or set the `checkmk_agent_win_config_optimize` variable to `false` to disable this optimization.
+
+Similar modifications have been made to the `docker.cfg` default file.  Here, all docker sections have been enabled and can be returned to the default by setting the `checkmk_agent_docker_complete` variable to `false`.
 
 ## Recent Version Matrix
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.2.0p25                    | 1.0.87           |
 | 2.2.0p24                    | 1.0.86           |
 | 2.2.0p23                    | 1.0.85           |
 | 2.2.0p22                    | 1.0.84           |
 | 2.2.0p21                    | 1.0.83           |
-| 2.2.0p20                    | 1.0.82           |
 
 ## Requirements
 
@@ -119,6 +121,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_count_zombie_procs_crit | Zombie processes, critical threshold | `10` |
 | checkmk_agent_count_zombie_procs_warn | Zombie processes, warning threshold | `5` |
 | checkmk_agent_dest | Full pathname of the CheckMK Agent executable file | `"{{ checkmk_agent_home }}/check_mk_agent"` |
+| checkmk_agent_docker_complete | Include all docker modules | `true` |
 | checkmk_agent_docker_dest | Full pathname of the Docker configuration file | `"{{ checkmk_agent_home }}/docker.cfg"` |
 | checkmk_agent_docker_group | Name of the group that should own the Docker configuration file | `"{{ checkmk_agent_group }}"` |
 | checkmk_agent_docker_mode | File mode settings of the Docker configuration file | `"0644"` |
@@ -159,8 +162,9 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `99_cmkagent.j2` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `cmkagent` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `2.2.0p24` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `2.2.0p25` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
+| checkmk_agent_win_config_optimize | Optimize the Windows agent by dropping some of the slower checks | `true` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `check_mk.user.yml.j2` |
 | checkmk_agent_win_data_folder | Full pathname of the CheckMK Agent data folder | `C:\\ProgramData\\checkmk\\agent\\` |
 | checkmk_agent_win_install_dest | Full pathname of the CheckMK Agent installation file | `c:\\Users\\{{ ansible_user }}\\Downloads\\{{ checkmk_agent_win_install_src }}` |

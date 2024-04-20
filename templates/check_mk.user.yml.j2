@@ -85,27 +85,39 @@ global:
     # sections: []
 
     # Valid example, but section is renamed to _sections and wil be ignored
-    sections: 
-        - check_mk 
-        - mrpe 
-        - skype 
-        - spool 
+    {% if not checkmk_agent_win_config_optimize %}_{% endif %}sections:
+        - check_mk
+        - mrpe
+        - skype
+        - spool
         - plugins
         - local
-        - winperf 
-        - uptime 
-        - systemtime 
-        - df 
-        - mem 
-    #    - services 
+        - winperf
+        - uptime
+        - systemtime
+        - df
+        - mem
+{% if checkmk_agent_win_config_optimize %}
+    #    - services
     #    - msexch
     #    - dotnet_clrmemory
     #    - wmi_webservices
     #    - wmi_cpuload
-    #    - ps 
-    #    - fileinfo 
-    #    - logwatch 
-    #    - openhardwaremonitor 
+    #    - ps
+    #    - fileinfo
+    #    - logwatch
+    #    - openhardwaremonitor
+{% else %}
+        - services
+        - msexch
+        - dotnet_clrmemory
+        - wmi_webservices
+        - wmi_cpuload
+        - ps
+        - fileinfo
+        - logwatch
+        - openhardwaremonitor
+{% endif %}
         - agent_plugins
 
     # Useful example
@@ -255,7 +267,7 @@ plugins:
     # all files from folders are gathered and verified, duplicated files will be removed
     # folders: ['$CUSTOM_PLUGINS_PATH$', '$BUILTIN_PLUGINS_PATH$' ]       # ProgramData/checkmk/agent/plugins & Program Files x86/checkmk/service/plugins
 
-    execution:
+    {% if checkmk_agent_win_config_optimize %}execution:{% else %}_execution:{% endif %} 
         # *********************************************************************************************
         # PATTERNS:
         # patterns 1. Absolute path: 'c:\Windows\*.exe' or '$CUSTOM_PLUGINS_PATH$\win_license.bat'
@@ -298,10 +310,14 @@ plugins:
 
 
         - pattern     : '$CUSTOM_PLUGINS_PATH$\*.*'         # in the ProgramData folder. DO NOT REMOVE THIS ENTRY
+{% if checkmk_agent_win_config_optimize %}
           async       : yes                 # agent will not wait for async plugins. Normally you will get data later.
           timeout     : 120                 # after 120 seconds process will be killed.
           cache_age   : 3600                # only combined with async, upto 3600 seconds we may reuse plugin output
                                              # default value is 0. Minimum positive value is 120.
+{% else %}
+          timeout     : 30                  # after 30 seconds process will be killed. 60 sec is default in check_mk.yml
+{% endif %}
           run         : yes                 # ALL FOUND files will be started. This is default value
 
         - pattern     : '$BUILTIN_PLUGINS_PATH$\*.*'         # in the ProgramFiles folder. DO NOT REMOVE THIS ENTRY

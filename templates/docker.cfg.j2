@@ -20,7 +20,7 @@
 # can disable them by specifying a comma separated list (Default: empty string
 # - run all sections). To disable the sections <<<docker_node_disk_usage>>>
 # and <<<docker_node_images>>>, for example, provide:
-#skip_sections: docker_node_disk_usage,docker_node_images
+{% if checkmk_agent_docker_complete %}#{% endif %}skip_sections: docker_node_disk_usage,docker_node_images
 # You may skip any of the following sections:
 #  * docker_node_disk_usage:     get df like info of disk usage (may take long)
 #  * docker_node_images:         get detailed information on all images and containers
