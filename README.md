@@ -14,17 +14,17 @@ All tasks are tagged with `checkmk-agent`.
 
 The following distributions have been tested automatically:
 
-- [CentOS 7](https://wiki.centos.org/action/show/Manuals/ReleaseNotes/CentOS7.2009)
-- [CentOS 8](https://wiki.centos.org/Manuals/ReleaseNotes/CentOSStream)
 - [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
 - [Debian 12 "Bookworm"](https://www.debian.org/releases/bookworm/)
-- [Fedora 37](https://docs.fedoraproject.org/en-US/fedora/f37/release-notes/)
 - [Fedora 38](https://docs.fedoraproject.org/en-US/fedora/f38/release-notes/)
 - [Fedora 39](https://docs.fedoraproject.org/en-US/fedora/f39/release-notes/)
+- [Fedora 40](https://docs.fedoraproject.org/en-US/fedora/f40/release-notes/)
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
+- [Microsoft Windows Server 2022](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2022) / [Microsoft Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications)
 - [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
 - [Ubuntu 22.04 LTS "Jammy Jellyfish"](http://releases.ubuntu.com/jammy/)
+- [Ubuntu 24.04 LTS "Noble Numbat"](http://releases.ubuntu.com/noble/)
 
 For performance reasons, the following "sections" have been disabled by default in the Windows agent:
 
@@ -52,11 +52,11 @@ Similar modifications have been made to the `docker.cfg` default file.  Here, al
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.3.0p3                     | 1.0.91           |
 | 2.3.0p2                     | 1.0.90           |
 | 2.3.0p1                     | 1.0.89           |
 | 2.3.0                       | 1.0.88           |
 | 2.2.0p25                    | 1.0.87           |
-| 2.2.0p24                    | 1.0.86           |
 
 ## Requirements
 
@@ -162,7 +162,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `99_cmkagent.j2` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `cmkagent` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `2.3.0p2` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `2.3.0p3` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_optimize | Optimize the Windows agent by dropping some of the slower checks | `true` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `check_mk.user.yml.j2` |
