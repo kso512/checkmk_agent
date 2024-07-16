@@ -13,22 +13,20 @@ galaxy_info:
         - bookworm
         - bullseye
         - buster
-    - name: EL
-      versions:
-        - "7"
-        - "8"
     - name: Fedora
       versions:
-        - "37"
         - "38"
         - "39"
+        - "40"
     - name: Ubuntu
       versions:
         - focal
         - jammy
+        - noble
     - name: Windows
       versions:
         - "2019"
+        - "2022"
   galaxy_tags:
     - check_mk
     - checkmk
