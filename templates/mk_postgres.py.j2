@@ -178,7 +178,7 @@ class PostgresBase:
         self.my_env["PGPASSFILE"] = instance.get("pg_passfile", "")
         self.psql_binary_name = "psql"
         if pg_binary_path is None:
-        self.psql_binary_path = self.get_psql_binary_path()
+            self.psql_binary_path = self.get_psql_binary_path()
         else:
             self.psql_binary_path = pg_binary_path
         self.psql_binary_dirname = self.get_psql_binary_dirname()
