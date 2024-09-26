@@ -52,7 +52,7 @@ Similar modifications have been made to the `docker.cfg` default file.  Here, al
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
-| 2.3.0p17                    | 1.1.5            |
+| 2.3.0p17                    | 1.1.5 - 1.1.6    |
 | 2.3.0p16                    | 1.1.4            |
 | 2.3.0p15                    | 1.1.3            |
 | 2.3.0p14                    | 1.1.2            |
