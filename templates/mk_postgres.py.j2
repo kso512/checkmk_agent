@@ -64,8 +64,10 @@ import optparse  # pylint: disable=W0402
 import os
 import platform
 import re
+import stat
 import subprocess
 import sys
+import tempfile
 
 try:
     from collections.abc import (  # noqa: F401 # pylint: disable=unused-import
@@ -83,7 +85,10 @@ except ImportError:
 # If you want to use the old behaviour just use old_stdout.
 if sys.version_info[0] >= 3:
     new_stdout = io.TextIOWrapper(
-        sys.stdout.buffer, newline="\n", encoding=sys.stdout.encoding, errors=sys.stdout.errors
+        sys.stdout.buffer,
+        newline="\n",
+        encoding=sys.stdout.encoding,
+        errors=sys.stdout.errors,
     )
     old_stdout, sys.stdout = sys.stdout, new_stdout
 
@@ -187,7 +192,13 @@ class PostgresBase:
 
     @abc.abstractmethod
     def run_sql_as_db_user(
-        self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
+        self,
+        sql_cmd,
+        extra_args="",
+        field_sep=";",
+        quiet=True,
+        rows_only=True,
+        mixed_cmd=False,
     ):
         # type: (str, str, str, bool, bool, bool) -> str
         """This method implements the system specific way to call the psql interface"""
@@ -457,7 +468,13 @@ def _sanitize_sql_query(out):
 
 class PostgresWin(PostgresBase):
     def run_sql_as_db_user(
-        self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
+        self,
+        sql_cmd,
+        extra_args="",
+        field_sep=";",
+        quiet=True,
+        rows_only=True,
+        mixed_cmd=False,
     ):
         # type: (str, str, str, bool | None, bool | None,bool | None) -> str
         """This method implements the system specific way to call the psql interface"""
@@ -780,11 +797,17 @@ class PostgresWin(PostgresBase):
 
 
 class PostgresLinux(PostgresBase):
-    def run_sql_as_db_user(
-        self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
+    def _run_sql_as_db_user(
+        self, sql_file_path, extra_args="", field_sep=";", quiet=True, rows_only=True
     ):
-        # type: (str, str, str, bool, bool, bool) -> str
-        base_cmd_list = ["su", "-", self.db_user, "-c", r"""PGPASSFILE=%s %s -X %s -A0 -F'%s'%s"""]
+        # type: (str, str, str, bool, bool) -> str
+        base_cmd_list = [
+            "su",
+            "-",
+            self.db_user,
+            "-c",
+            r"""PGPASSFILE=%s %s -X %s -A0 -F'%s' -f %s""",
+        ]
         extra_args += " -U %s" % self.pg_user
         extra_args += " -d %s" % self.pg_database
         extra_args += " -p %s" % self.pg_port
@@ -794,40 +817,36 @@ class PostgresLinux(PostgresBase):
         if rows_only:
             extra_args += " -t"
 
-        # In case we want to use postgres meta commands AND SQL queries in one call, we need to pipe
-        # the full cmd string into psql executable
-        # see https://www.postgresql.org/docs/9.2/app-psql.html
-        if mixed_cmd:
-            cmd_to_pipe = subprocess.Popen(  # pylint: disable=consider-using-with
-                ["echo", sql_cmd], stdout=subprocess.PIPE
-            )
-            base_cmd_list[-1] = base_cmd_list[-1] % (
-                self.pg_passfile,
-                self.psql_binary_path,
-                extra_args,
-                field_sep,
-                "",
-            )
+        base_cmd_list[-1] = base_cmd_list[-1] % (
+            self.pg_passfile,
+            self.psql_binary_path,
+            extra_args,
+            field_sep,
+            sql_file_path,
+        )
+        proc = subprocess.Popen(  # pylint: disable=consider-using-with
+            base_cmd_list, env=self.my_env, stdout=subprocess.PIPE
+        )
+        return _sanitize_sql_query(proc.communicate()[0])
 
-            receiving_pipe = subprocess.Popen(  # pylint: disable=consider-using-with
-                base_cmd_list, stdin=cmd_to_pipe.stdout, stdout=subprocess.PIPE, env=self.my_env
+    def run_sql_as_db_user(
+        self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
+    ):
+        # type: (str, str, str, bool, bool, bool) -> str
+        with tempfile.NamedTemporaryFile(delete=True) as tmp:
+            tmp.write(sql_cmd.encode("utf-8"))
+            # set cursor to the beginning of the file
+            tmp.seek(0)
+            # We use 'psql ... -f <FILE_PATH>', the tmp file has to be readable to all users,
+            # ie. stat.S_IROTH
+            os.chmod(tmp.name, stat.S_IROTH)
+            return self._run_sql_as_db_user(
+                tmp.name,
+                extra_args=extra_args,
+                field_sep=field_sep,
+                quiet=quiet,
+                rows_only=rows_only,
             )
-            out = receiving_pipe.communicate()[0]
-
-        else:
-            base_cmd_list[-1] = base_cmd_list[-1] % (
-                self.pg_passfile,
-                self.psql_binary_path,
-                extra_args,
-                field_sep,
-                ' -c "%s" ' % sql_cmd,
-            )
-            proc = subprocess.Popen(  # pylint: disable=consider-using-with
-                base_cmd_list, env=self.my_env, stdout=subprocess.PIPE
-            )
-            out = proc.communicate()[0]
-
-        return _sanitize_sql_query(out)
 
     def get_psql_binary_path(self):
         # type: () -> str
@@ -893,7 +912,8 @@ class PostgresLinux(PostgresBase):
         procs = self._filter_instances(procs_list, proc_sensitive_filter=lambda p: self.name in p)
         if not procs:
             procs = self._filter_instances(
-                procs_list, proc_sensitive_filter=lambda p: self.name.lower() in p.lower()
+                procs_list,
+                proc_sensitive_filter=lambda p: self.name.lower() in p.lower(),
             )
         out = "\n".join(procs)
         return out.rstrip()
@@ -1239,7 +1259,12 @@ def _parse_INSTANCE_value(value, config_separator):
         keys = keys + [""]
     env_file, pg_user, pg_passfile, instance_name = keys
     env_file = env_file.strip()
-    return env_file, pg_user, pg_passfile, instance_name or env_file.split(os.sep)[-1].split(".")[0]
+    return (
+        env_file,
+        pg_user,
+        pg_passfile,
+        instance_name or env_file.split(os.sep)[-1].split(".")[0],
+    )
 
 
 def parse_postgres_cfg(postgres_cfg, config_separator):
