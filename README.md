@@ -52,11 +52,11 @@ Similar modifications have been made to the `docker.cfg` default file.  Here, al
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.3.0p19                    | 1.1.8            |
 | 2.3.0p18                    | 1.1.7            |
 | 2.3.0p17                    | 1.1.5 - 1.1.6    |
 | 2.3.0p16                    | 1.1.4            |
 | 2.3.0p15                    | 1.1.3            |
-| 2.3.0p14                    | 1.1.2            |
 
 ## Requirements
 
@@ -162,7 +162,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `99_cmkagent.j2` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `cmkagent` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `2.3.0p18` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `2.3.0p19` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_optimize | Optimize the Windows agent by dropping some of the slower checks | `true` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `check_mk.user.yml.j2` |
