@@ -12,14 +12,13 @@ This is a complete rebuild of the [install-check_mk-agent](https://github.com/ks
 
 All tasks are tagged with `checkmk-agent`.
 
-The following distributions have been tested automatically:
+The following distributions have been tested as described in the Testing section below:
 
-- [Debian 10 "Buster"](https://www.debian.org/releases/buster/)
 - [Debian 11 "Bullseye"](https://www.debian.org/releases/bullseye/)
 - [Debian 12 "Bookworm"](https://www.debian.org/releases/bookworm/)
-- [Fedora 38](https://docs.fedoraproject.org/en-US/fedora/f38/release-notes/)
-- [Fedora 39](https://docs.fedoraproject.org/en-US/fedora/f39/release-notes/)
 - [Fedora 40](https://docs.fedoraproject.org/en-US/fedora/f40/release-notes/)
+- [Fedora 41](https://docs.fedoraproject.org/en-US/fedora/f41/release-notes/)
+- [Fedora 42](https://docs.fedoraproject.org/en-US/fedora/f42/release-notes/)
 - [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
 - [Microsoft Windows Server 2022](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2022) / [Microsoft Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications)
 - [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
@@ -52,11 +51,11 @@ Similar modifications have been made to the `docker.cfg` default file.  Here, al
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.4.0p9                     | 1.1.19           |
 | 2.3.0p30                    | 1.1.18           |
 | 2.3.0p29                    | 1.1.17           |
 | 2.3.0p28                    | 1.1.16           |
 | 2.3.0p27                    | 1.1.15           |
-| 2.3.0p26                    | (skipped)        |
 
 ## Requirements
 
@@ -162,7 +161,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `99_cmkagent.j2` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `cmkagent` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `2.3.0p30` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `2.4.0p9` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_optimize | Optimize the Windows agent by dropping some of the slower checks | `true` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `check_mk.user.yml.j2` |
@@ -217,6 +216,31 @@ Example that purges the `plugin` folder before re-creating it:
     
     TASK [kso512.checkmk_agent : Create directory - plugins | FILE] ***********
     changed: [instance]
+
+## Testing
+
+Tested using the included `test_all_distros.sh` command, ran from the main role directory or the `test` subdirectory:
+
+    $ ./test_all_distros.sh
+    --- Running container for distro: debian11
+    --- Testing role in distro: debian11
+    
+    PLAY [Run role under test] *******************************************************************************************************************************************************************
+    
+    TASK [Gathering Facts] ***********************************************************************************************************************************************************************
+    ok: [localhost]
+
+%<-- snip -->%
+
+    TASK [role_under_test : Start and enable Apache2 | SERVICE] **********************************************************************************************************************************
+    changed: [localhost]
+    
+    PLAY RECAP ***********************************************************************************************************************************************************************************
+    localhost                  : ok=11   changed=8    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+    
+    --- Removing container for distro: ubuntu2404
+
+Based on [Jeff Geerling's](https://github.com/geerlingguy) [awesome work](https://hub.docker.com/r/geerlingguy/docker-debian12-ansible).
 
 ## License
 
