@@ -19,11 +19,14 @@ The following distributions have been tested as described in the Testing section
 - [Fedora 40](https://docs.fedoraproject.org/en-US/fedora/f40/release-notes/)
 - [Fedora 41](https://docs.fedoraproject.org/en-US/fedora/f41/release-notes/)
 - [Fedora 42](https://docs.fedoraproject.org/en-US/fedora/f42/release-notes/)
-- [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
-- [Microsoft Windows Server 2022](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2022) / [Microsoft Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications)
 - [Ubuntu 20.04 LTS "Focal Fossa"](http://releases.ubuntu.com/focal/)
 - [Ubuntu 22.04 LTS "Jammy Jellyfish"](http://releases.ubuntu.com/jammy/)
 - [Ubuntu 24.04 LTS "Noble Numbat"](http://releases.ubuntu.com/noble/)
+
+The following operating systems have been tested manually:
+
+- [Microsoft Windows Server 2019](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2019) / [Microsoft Windows 10](https://www.microsoft.com/en-us/windows/windows-10-specifications)
+- [Microsoft Windows Server 2022](https://docs.microsoft.com/en-us/windows-server/get-started/whats-new-in-windows-server-2022) / [Microsoft Windows 11](https://www.microsoft.com/en-us/windows/windows-11-specifications)
 
 For performance reasons, the following "sections" have been disabled by default in the Windows agent:
 
@@ -51,11 +54,11 @@ Similar modifications have been made to the `docker.cfg` default file.  Here, al
 
 | CheckMK Raw Edition Version | Role Version/Tag |
 | --------------------------- | ---------------- |
+| 2.4.0p10                    | 1.1.20           |
 | 2.4.0p9                     | 1.1.19           |
 | 2.3.0p30                    | 1.1.18           |
 | 2.3.0p29                    | 1.1.17           |
 | 2.3.0p28                    | 1.1.16           |
-| 2.3.0p27                    | 1.1.15           |
 
 ## Requirements
 
@@ -161,7 +164,7 @@ Some of these may be seem redundant but are specified so future users can overri
 | checkmk_agent_sudo_src | Filename of the "sudoers.d" file template | `99_cmkagent.j2` |
 | checkmk_agent_sudo_validate | Command used to validate the "sudoers.d" file; %s will be filled in with `checkmk_agent_sudo_dest` | `'visudo -cf %s'` |
 | checkmk_agent_user | Login name of the CheckMK Agent user | `cmkagent` |
-| checkmk_agent_version | Version of CheckMK Agent to install | `2.4.0p9` |
+| checkmk_agent_version | Version of CheckMK Agent to install | `2.4.0p10` |
 | checkmk_agent_win_config_dest | Full pathname of configuration file | `"{{ checkmk_agent_win_data_folder }}check_mk.user.yml"` |
 | checkmk_agent_win_config_optimize | Optimize the Windows agent by dropping some of the slower checks | `true` |
 | checkmk_agent_win_config_src | Filename of the configuration file template | `check_mk.user.yml.j2` |

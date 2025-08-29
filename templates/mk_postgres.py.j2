@@ -70,12 +70,8 @@ import sys
 import tempfile
 
 try:
-    from collections.abc import (  # noqa: F401 # pylint: disable=unused-import
-        Callable,
-        Iterable,
-        Sequence,
-    )
-    from typing import Any  # noqa: F401 # pylint: disable=unused-import
+    from collections.abc import Callable, Iterable, Sequence  # noqa: F401
+    from typing import Any  # noqa: F401
 except ImportError:
     # We need typing only for testing
     pass
@@ -85,10 +81,7 @@ except ImportError:
 # If you want to use the old behaviour just use old_stdout.
 if sys.version_info[0] >= 3:
     new_stdout = io.TextIOWrapper(
-        sys.stdout.buffer,
-        newline="\n",
-        encoding=sys.stdout.encoding,
-        errors=sys.stdout.errors,
+        sys.stdout.buffer, newline="\n", encoding=sys.stdout.encoding, errors=sys.stdout.errors
     )
     old_stdout, sys.stdout = sys.stdout, new_stdout
 
@@ -146,8 +139,7 @@ def ensure_str(s):
     if sys.version_info[0] >= 3:
         if isinstance(s, bytes):
             return s.decode("utf-8")
-    else:
-        if isinstance(s, unicode):  # pylint: disable=undefined-variable
+    elif isinstance(s, unicode):  # pylint: disable=undefined-variable # noqa: F821
             return s.encode("utf-8")
     return s
 
@@ -168,7 +160,7 @@ class PostgresBase:
     """
 
     __metaclass__ = abc.ABCMeta
-    _supported_pg_versions = ["12"]
+    _supported_pg_versions = ["12", "15"]
 
     def __init__(self, db_user, pg_binary_path, instance, process_match_patterns):
         # type: (str, str | None, dict, Sequence[re.Pattern]) -> None
@@ -180,7 +172,10 @@ class PostgresBase:
         self.pg_passfile = instance.get("pg_passfile", "")
         self.pg_version = instance.get("pg_version")
         self.my_env = os.environ.copy()
-        self.my_env["PGPASSFILE"] = instance.get("pg_passfile", "")
+        pg_passfile = instance.get("pg_passfile")
+        if pg_passfile:
+            self.my_env["PGPASSFILE"] = pg_passfile
+        self.sep = os.sep
         self.psql_binary_name = "psql"
         if pg_binary_path is None:
             self.psql_binary_path = self.get_psql_binary_path()
@@ -192,13 +187,7 @@ class PostgresBase:
 
     @abc.abstractmethod
     def run_sql_as_db_user(
-        self,
-        sql_cmd,
-        extra_args="",
-        field_sep=";",
-        quiet=True,
-        rows_only=True,
-        mixed_cmd=False,
+        self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
     ):
         # type: (str, str, str, bool, bool, bool) -> str
         """This method implements the system specific way to call the psql interface"""
@@ -268,8 +257,8 @@ class PostgresBase:
         condition = "%s = %s" % (row, idle)
 
         sql_cmd = (
-            "SELECT %s, count(*) FROM pg_stat_activity " "WHERE %s IS NOT NULL GROUP BY (%s);"
-        ) % (condition, row, condition)
+            "SELECT %s, count(*) FROM pg_stat_activity WHERE %s IS NOT NULL GROUP BY (%s);"
+        ) % (condition, row, condition)  # nosec B608 # BNS:fa3c6c
 
         out = self.run_sql_as_db_user(
             sql_cmd, quiet=False, extra_args="--variable ON_ERROR_STOP=1", field_sep=" "
@@ -468,13 +457,7 @@ def _sanitize_sql_query(out):
 
 class PostgresWin(PostgresBase):
     def run_sql_as_db_user(
-        self,
-        sql_cmd,
-        extra_args="",
-        field_sep=";",
-        quiet=True,
-        rows_only=True,
-        mixed_cmd=False,
+        self, sql_cmd, extra_args="", field_sep=";", quiet=True, rows_only=True, mixed_cmd=False
     ):
         # type: (str, str, str, bool | None, bool | None,bool | None) -> str
         """This method implements the system specific way to call the psql interface"""
@@ -535,7 +518,9 @@ class PostgresWin(PostgresBase):
     @classmethod
     def _logical_drives(cls):
         # type: () -> Iterable[str]
-        for drive in cls._parse_wmic_logicaldisk(cls._call_wmic_logicaldisk()):
+        for drive in cls._parse_wmic_logicaldisk(  # pylint: disable=use-yield-from # for python2.7
+            cls._call_wmic_logicaldisk()
+        ):
             yield drive
 
     def get_psql_binary_path(self):
@@ -785,15 +770,15 @@ class PostgresWin(PostgresBase):
                 "BY totalwastedbytes DESC LIMIT 10;"
             )
 
-        query = "\\pset footer off \\\\"
-
         cur_rows_only = False
+        output = ""
         for idx, database in enumerate(databases):
-            query = "%s \\c %s \\\\ %s" % (query, database, bloat_query)
+            query = "\\pset footer off \\\\ \\c %s \\\\ %s" % (database, bloat_query)
             if idx == 0:
                 query = "%s \\pset tuples_only on" % query
-
-        return self.run_sql_as_db_user(query, mixed_cmd=True, rows_only=cur_rows_only)
+            output += self.run_sql_as_db_user(query, mixed_cmd=True, rows_only=cur_rows_only)
+            cur_rows_only = True
+        return output
 
 
 class PostgresLinux(PostgresBase):
@@ -912,8 +897,7 @@ class PostgresLinux(PostgresBase):
         procs = self._filter_instances(procs_list, proc_sensitive_filter=lambda p: self.name in p)
         if not procs:
             procs = self._filter_instances(
-                procs_list,
-                proc_sensitive_filter=lambda p: self.name.lower() in p.lower(),
+                procs_list, proc_sensitive_filter=lambda p: self.name.lower() in p.lower()
             )
         out = "\n".join(procs)
         return out.rstrip()
@@ -1259,12 +1243,7 @@ def _parse_INSTANCE_value(value, config_separator):
         keys = keys + [""]
     env_file, pg_user, pg_passfile, instance_name = keys
     env_file = env_file.strip()
-    return (
-        env_file,
-        pg_user,
-        pg_passfile,
-        instance_name or env_file.split(os.sep)[-1].split(".")[0],
-    )
+    return env_file, pg_user, pg_passfile, instance_name or env_file.split(os.sep)[-1].split(".")[0]
 
 
 def parse_postgres_cfg(postgres_cfg, config_separator):
