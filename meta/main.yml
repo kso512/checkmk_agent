@@ -12,12 +12,11 @@ galaxy_info:
       versions:
         - bookworm
         - bullseye
-        - buster
     - name: Fedora
       versions:
-        - "38"
-        - "39"
         - "40"
+        - "41"
+        - "42"
     - name: Ubuntu
       versions:
         - focal
