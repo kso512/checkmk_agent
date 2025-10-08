@@ -1,6 +1,6 @@
 ---
-- hosts: localhost
-  name: Run role under test
+- name: Run role under test
+  hosts: localhost
   become: true
   roles:
     - role_under_test
